@@ -1,4 +1,4 @@
-package ru.otus.erinary;
+package ru.otus.erinary.diyarraylist;
 
 import java.util.*;
 import java.util.function.UnaryOperator;

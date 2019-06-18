@@ -1,4 +1,4 @@
-package ru.otus.erinary;
+package ru.otus.erinary.diyarraylist;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
