@@ -7,7 +7,7 @@ public class DIYArrayList<T> implements List<T> {
 
     private static final int DEFAULT_CAPACITY = 10;
     private T[] items;
-    private int size = 0;
+    private int size;
 
     @SuppressWarnings("unchecked")
     public DIYArrayList() {
@@ -19,6 +19,88 @@ public class DIYArrayList<T> implements List<T> {
         this.items = (T[]) new Object[capacity];
     }
 
+    /*---- Итераторы ----*/
+    private class DIYIterator implements Iterator<T> {
+
+        int current;
+        int lastElem = -1;
+
+        DIYIterator() {
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current < size;
+        }
+
+        @Override
+        public T next() {
+            T result;
+            if (hasNext()) {
+                result = get(current);
+                lastElem = current;
+                current += 1;
+            } else {
+                throw new NoSuchElementException();
+            }
+            return result;
+        }
+
+    }
+
+    private class DIYListIterator extends DIYIterator implements ListIterator<T> {
+
+        DIYListIterator(int index) {
+            super();
+            this.current = index;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return current != 0;
+        }
+
+        @Override
+        public T previous() {
+            T result;
+            if (hasPrevious()) {
+                result = get(previousIndex());
+                lastElem = previousIndex();
+                current -= 1;
+            } else {
+                throw new NoSuchElementException();
+            }
+            return result;
+        }
+
+        @Override
+        public int nextIndex() {
+            return current + 1;
+        }
+
+        @Override
+        public int previousIndex() {
+            return current - 1;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(T t) {
+            DIYArrayList.this.set(lastElem, t);
+        }
+
+        @Override
+        public void add(T t) {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    /*---- Методы ----*/
     private void increaseCapacity() {
         T[] old = items;
         items = Arrays.copyOf(old, old.length * 2);
@@ -41,12 +123,12 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public Iterator<T> iterator() {
-        throw new UnsupportedOperationException();
+        return new DIYIterator();
     }
 
     @Override
     public Object[] toArray() {
-        throw new UnsupportedOperationException();
+        return Arrays.copyOf(items, items.length);
     }
 
     @Override
@@ -101,22 +183,33 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public void sort(Comparator<? super T> c) {
-        throw new UnsupportedOperationException();
+        Arrays.sort(items, 0, size, c);
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException();
+        for (int i = 0; i < size; ++i) {
+            items[i] = null;
+        }
+        size = 0;
     }
 
     @Override
     public T get(int index) {
-        throw new UnsupportedOperationException();
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Выход за границы списка");
+        }
+        return items[index];
     }
 
     @Override
     public T set(int index, T element) {
-        throw new UnsupportedOperationException();
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Выход за границы списка");
+        }
+        T prev = items[index];
+        items[index] = element;
+        return prev;
     }
 
     @Override
@@ -141,12 +234,12 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public ListIterator<T> listIterator() {
-        throw new UnsupportedOperationException();
+        return new DIYListIterator(0);
     }
 
     @Override
     public ListIterator<T> listIterator(int index) {
-        throw new UnsupportedOperationException();
+        return new DIYListIterator(index);
     }
 
     @Override
@@ -158,6 +251,5 @@ public class DIYArrayList<T> implements List<T> {
     public Spliterator<T> spliterator() {
         throw new UnsupportedOperationException();
     }
-
 
 }
