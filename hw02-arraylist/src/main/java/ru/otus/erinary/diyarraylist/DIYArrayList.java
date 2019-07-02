@@ -6,6 +6,7 @@ import java.util.function.UnaryOperator;
 public class DIYArrayList<T> implements List<T> {
 
     private static final int DEFAULT_CAPACITY = 10;
+    private static final int CAPACITY_INCREASE_MULTIPLIER = 2;
     private T[] items;
     private int size;
 
@@ -103,7 +104,7 @@ public class DIYArrayList<T> implements List<T> {
     /*---- Методы ----*/
     private void increaseCapacity() {
         T[] old = items;
-        items = Arrays.copyOf(old, old.length * 2);
+        items = Arrays.copyOf(old, old.length * CAPACITY_INCREASE_MULTIPLIER);
     }
 
     @Override
@@ -196,18 +197,12 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public T get(int index) {
-        if (index >= size || index < 0) {
-            throw new IndexOutOfBoundsException("Выход за границы списка");
-        }
-        return items[index];
+        return items[Objects.checkIndex(index, items.length)];
     }
 
     @Override
     public T set(int index, T element) {
-        if (index >= size || index < 0) {
-            throw new IndexOutOfBoundsException("Выход за границы списка");
-        }
-        T prev = items[index];
+        T prev = items[Objects.checkIndex(index, items.length)];
         items[index] = element;
         return prev;
     }

@@ -1,17 +1,23 @@
 package ru.otus.erinary.diyarraylist;
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static ru.otus.erinary.diyarraylist.TestHelper.*;
 
 class DIYArrayListTest {
 
-    private static final int TEST_SIZE = 100;
-    private DIYArrayList<Integer> testList = new DIYArrayList<>(TEST_SIZE);
+    static final int TEST_SIZE = 100;
+    private DIYArrayList<Integer> testList;
+
+    @BeforeEach
+    void setup() {
+        testList = new DIYArrayList<>(TEST_SIZE);
+    }
 
     @Test
     void testAddAll() {
@@ -47,38 +53,5 @@ class DIYArrayListTest {
         Collections.addAll(testList, elements);
         Collections.sort(testList, Comparator.comparingInt(o -> o));
         assertTrue(isSorted(testList, Comparator.comparingInt(o -> o)));
-    }
-
-    @AfterEach
-    void clearTestList() {
-        testList.clear();
-    }
-
-    private Integer[] formTestData() {
-        Integer[] result = new Integer[TEST_SIZE];
-        for (int i = 0; i < TEST_SIZE; ++i) {
-            result[i] = i;
-        }
-        return result;
-    }
-
-    private Integer[] formRandomTestData() {
-        Random random = new Random();
-        Integer[] result = new Integer[TEST_SIZE];
-        for (int i = 0; i < TEST_SIZE; ++i) {
-            result[i] = random.ints(-100, 100).limit(1).findFirst().getAsInt();
-        }
-        return result;
-    }
-
-    private <T> boolean isSorted(List<T> testList, Comparator<T> cmp) {
-        T prev = null;
-        for (T elem : testList) {
-            if (prev != null && cmp.compare(prev, elem) > 0) {
-                return false;
-            }
-            prev = elem;
-        }
-        return true;
     }
 }
