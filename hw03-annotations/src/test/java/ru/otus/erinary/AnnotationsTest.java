@@ -8,13 +8,13 @@ import ru.otus.erinary.annotations.Test;
 public class AnnotationsTest {
 
     @Before
-    void testBefore() {
-        System.out.println("Execution before each");
+    void testBeforeA() {
+        System.out.println("Execution before each A");
     }
 
     @After
-    void testAfter() {
-        System.out.println("Execution after each");
+    void testAfterA() {
+        System.out.println("Execution after each A");
     }
 
     @Test
@@ -27,8 +27,18 @@ public class AnnotationsTest {
         System.out.println("Test2");
     }
 
+    @After
+    void testAfterB() {
+        System.out.println("Execution after each B");
+    }
+
     @Test
     void testThree() {
         System.out.println("Test3");
+    }
+
+    @Before
+    void testBeforeB() {
+        System.out.println("Execution before each B");
     }
 }
