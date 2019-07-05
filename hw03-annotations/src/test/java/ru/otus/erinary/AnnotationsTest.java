@@ -25,6 +25,7 @@ public class AnnotationsTest {
     @Test
     void testTwo() {
         System.out.println("Test2");
+        throw new NullPointerException();
     }
 
     @After
