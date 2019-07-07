@@ -30,13 +30,8 @@ public class TestRunner {
     public void run(Class<?> testClass) {
         sortMethodsByAnnotation(testClass.getDeclaredMethods());
         for (Method testMethod : testList) {
-            Constructor<?> constructor = testClass.getConstructors()[0];
-            Object instance;
-            try {
-                instance = constructor.newInstance();
-            } catch (Exception e) {
-                System.out.println("Can't instantiate test");
-                e.printStackTrace(System.out);
+            Object instance = createClassInstance(testClass);
+            if (instance == null) {
                 return;
             }
             try {
@@ -46,28 +41,9 @@ public class TestRunner {
                 testMethod.invoke(instance);
                 testResultMap.put(testMethod.getName(), TestResult.PASSED);
             } catch (Exception e) {
-                if (e instanceof InvocationTargetException) {
-                    if (e.getCause() instanceof AssertionException) {
-                        testResultMap.put(testMethod.getName(), TestResult.FAILED);
-                        System.out.println("Test failed because of: " + e.getCause().getMessage());
-                    } else {
-                        testResultMap.put(testMethod.getName(), TestResult.EXCEPTION);
-                        System.out.println("Exception in test");
-                        e.getCause().printStackTrace(System.out);
-                    }
-                } else {
-                    testResultMap.put(testMethod.getName(), TestResult.EXCEPTION);
-                    e.printStackTrace(System.out);
-                }
+                handleException(e, testMethod);
             } finally {
-                for (Method m : afterEachList) {
-                    try {
-                        m.invoke(instance);
-                    } catch (Exception e) {
-                        System.out.println("AfterEach block failed");
-                        e.printStackTrace(System.out);
-                    }
-                }
+                executeAfterEach(instance);
             }
             System.out.println("--------------");
         }
@@ -83,6 +59,45 @@ public class TestRunner {
                 beforeEachList.add(method);
             } else if (method.getAnnotation(After.class) != null) {
                 afterEachList.add(method);
+            }
+        }
+    }
+
+    private Object createClassInstance(Class<?> testClass) {
+        Constructor<?> constructor = testClass.getConstructors()[0];
+        Object instance = null;
+        try {
+            instance = constructor.newInstance();
+        } catch (Exception e) {
+            System.out.println("Can't instantiate test");
+            e.printStackTrace(System.out);
+        }
+        return instance;
+    }
+
+    private void handleException(Exception e, Method testMethod) {
+        if (e instanceof InvocationTargetException) {
+            if (e.getCause() instanceof AssertionException) {
+                testResultMap.put(testMethod.getName(), TestResult.FAILED);
+                System.out.println("Test failed because of: " + e.getCause().getMessage());
+            } else {
+                testResultMap.put(testMethod.getName(), TestResult.EXCEPTION);
+                System.out.println("Exception in test");
+                e.getCause().printStackTrace(System.out);
+            }
+        } else {
+            testResultMap.put(testMethod.getName(), TestResult.EXCEPTION);
+            e.printStackTrace(System.out);
+        }
+    }
+
+    private void executeAfterEach(Object instance) {
+        for (Method m : afterEachList) {
+            try {
+                m.invoke(instance);
+            } catch (Exception e) {
+                System.out.println("AfterEach block failed");
+                e.printStackTrace(System.out);
             }
         }
     }
