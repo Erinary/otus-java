@@ -12,6 +12,7 @@
     <modules>
         <module>hw01-maven</module>
         <module>hw02-arraylist</module>
+        <module>hw04-magic-log</module>
     </modules>
 
     <properties>
