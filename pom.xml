@@ -12,6 +12,7 @@
     <modules>
         <module>hw01-maven</module>
         <module>hw02-arraylist</module>
+        <module>hw03-annotations</module>
         <module>hw04-magic-log</module>
     </modules>
 
@@ -23,6 +24,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.6</version>
+                <scope>provided</scope>
+            </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
