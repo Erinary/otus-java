@@ -30,21 +30,21 @@ public class InstrumentationAgent {
                                     Class<?> classBeingRedefined,
                                     ProtectionDomain protectionDomain,
                                     byte[] classfileBuffer) {
-                if (className.equals("ru/otus/erinary/instrumentation/MyClass")) {
+                if (!className.equals("ru/otus/erinary/common/Log")) {
                     MyProxyClassLoader classLoader = new MyProxyClassLoader();
-                    for (Method method : classLoader.defineClass(classfileBuffer).getDeclaredMethods()) {
+                    for (Method method : classLoader.defineClass(className, classfileBuffer).getDeclaredMethods()) {
                         if (method.getAnnotation(Log.class) != null) {
                             loggedMethods.add(method.getName());
                         }
                     }
-                    return addProxyMethod(classfileBuffer, loggedMethods);
+                    return addProxyMethod(classfileBuffer, loggedMethods, className);
                 }
                 return classfileBuffer;
             }
         });
     }
 
-    private static byte[] addProxyMethod(byte[] originalClass, Set<String> loggedMethods) {
+    private static byte[] addProxyMethod(byte[] originalClass, Set<String> loggedMethods, String className) {
         ClassReader reader = new ClassReader(originalClass);
         ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
         ClassVisitor visitor = new ClassVisitor(OPCODE, writer) {
@@ -78,14 +78,14 @@ public class InstrumentationAgent {
             methodVisitor.visitInvokeDynamicInsn("makeConcatWithConstants",
                     "(Ljava/lang/String;)Ljava/lang/String;",
                     handle,
-                    "param:\u0001"); //TODO строка "executed: %{methodName}, params: %{params}"
+                    "[From premain] - params: [\u0001]"); //TODO строка "executed: %{methodName}, params: %{params}"
             methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
 
             //TODO зависимость от кол-ва и типов аргументов
             /*вызов исходного метода + логирование*/
             methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
             methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
-            methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ru/otus/erinary/instrumentation/MyClass", method + "Proxied", "(Ljava/lang/String;)V", false);
+            methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, className, method + "Proxied", "(Ljava/lang/String;)V", false);
 
             methodVisitor.visitInsn(Opcodes.RETURN);
             methodVisitor.visitMaxs(0, 0);

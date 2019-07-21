@@ -2,10 +2,8 @@ package ru.otus.erinary.instrumentation;
 
 class MyProxyClassLoader extends ClassLoader {
 
-    //TODO убрать хардкод класса
-    private static final String CLASS_NAME = "ru.otus.erinary.instrumentation.MyClass";
-
-    Class<?> defineClass(byte[] originalClass) {
-        return super.defineClass(CLASS_NAME, originalClass, 0, originalClass.length);
+    Class<?> defineClass(String className, byte[] originalClass) {
+        String name = className.replaceAll("/", ".");
+        return super.defineClass(name, originalClass, 0, originalClass.length);
     }
 }
