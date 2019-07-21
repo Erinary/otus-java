@@ -1,6 +1,6 @@
 package ru.otus.erinary.instrumentation;
 
-import ru.otus.erinary.common.Log;
+import ru.otus.erinary.annotation.Log;
 
 class MyAnotherClass {
 

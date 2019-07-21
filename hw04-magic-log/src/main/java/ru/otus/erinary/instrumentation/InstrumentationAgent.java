@@ -1,7 +1,7 @@
 package ru.otus.erinary.instrumentation;
 
 import org.objectweb.asm.*;
-import ru.otus.erinary.common.Log;
+import ru.otus.erinary.annotation.Log;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -30,7 +30,7 @@ public class InstrumentationAgent {
                                     Class<?> classBeingRedefined,
                                     ProtectionDomain protectionDomain,
                                     byte[] classfileBuffer) {
-                if (!className.equals("ru/otus/erinary/common/Log")) {
+                if (!className.equals("ru/otus/erinary/annotation/Log")) {
                     MyProxyClassLoader classLoader = new MyProxyClassLoader();
                     for (Method method : classLoader.defineClass(className, classfileBuffer).getDeclaredMethods()) {
                         if (method.getAnnotation(Log.class) != null) {

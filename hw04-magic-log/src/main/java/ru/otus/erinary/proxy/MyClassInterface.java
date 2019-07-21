@@ -1,4 +1,4 @@
-package ru.otus.erinary.common;
+package ru.otus.erinary.proxy;
 
 public interface MyClassInterface {
 

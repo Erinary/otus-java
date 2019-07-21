@@ -1,7 +1,6 @@
 package ru.otus.erinary.proxy;
 
-import ru.otus.erinary.common.Log;
-import ru.otus.erinary.common.MyClassInterface;
+import ru.otus.erinary.annotation.Log;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

@@ -1,4 +1,6 @@
-package ru.otus.erinary.common;
+package ru.otus.erinary.proxy;
+
+import ru.otus.erinary.annotation.Log;
 
 public class MyClassImpl implements MyClassInterface {
 
