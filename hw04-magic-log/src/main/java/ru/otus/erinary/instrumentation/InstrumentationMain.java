@@ -1,5 +1,8 @@
 package ru.otus.erinary.instrumentation;
 
+import ru.otus.erinary.instrumentation.classes.MyAnotherClass;
+import ru.otus.erinary.instrumentation.classes.MyClass;
+
 /*
     java -javaagent:MagicLog.jar -jar MagicLog.jar
 */
