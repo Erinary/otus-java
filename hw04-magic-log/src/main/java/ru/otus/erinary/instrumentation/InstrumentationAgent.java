@@ -78,10 +78,9 @@ public class InstrumentationAgent {
             methodVisitor.visitInvokeDynamicInsn("makeConcatWithConstants",
                     "(Ljava/lang/String;)Ljava/lang/String;",
                     handle,
-                    "[From premain] - params: [\u0001]"); //TODO строка "executed: %{methodName}, params: %{params}"
+                    "[Log] - executed: [" + method + "], param: [\u0001]");
             methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
 
-            //TODO зависимость от кол-ва и типов аргументов
             /*вызов исходного метода + логирование*/
             methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
             methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
