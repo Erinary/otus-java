@@ -11,11 +11,11 @@ public class Cell {
     private final Denomination denomination;
     private long amount;
 
-    void addBankNotes(long number) {
+    public void addBankNotes(long number) {
         amount += number;
     }
 
-    void removeBankNotes(long number) {
+    public void removeBankNotes(long number) {
         if (number > amount) {
             throw new ATMServiceException("В ячейке [" + denomination.value + "] кончились банкноты");
         }
