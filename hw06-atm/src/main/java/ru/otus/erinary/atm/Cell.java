@@ -11,6 +11,7 @@ public class Cell {
     private final Denomination denomination;
     private long amount;
 
+    @SuppressWarnings("WeakerAccess")
     public void addBankNotes(long number) {
         amount += number;
     }

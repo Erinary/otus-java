@@ -16,7 +16,7 @@ import static ru.otus.erinary.atm.Cell.Denomination;
  */
 public class DefaultStrategy implements PaymentStrategy {
 
-    private ATM atm;
+    ATM atm;
 
     @Override
     public void setATM(ATM atm) {

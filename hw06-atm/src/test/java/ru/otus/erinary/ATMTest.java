@@ -7,6 +7,7 @@ import ru.otus.erinary.atm.Cell;
 import ru.otus.erinary.atm.Cell.Denomination;
 import ru.otus.erinary.atm.exception.ATMServiceException;
 import ru.otus.erinary.atm.payment.DefaultStrategy;
+import ru.otus.erinary.atm.payment.DenominationStrategy;
 import ru.otus.erinary.atm.payment.PaymentStrategy;
 
 import java.util.List;
@@ -45,7 +46,7 @@ class ATMTest {
     }
 
     @Test
-    void testGetMoney() {
+    void testGetMoneyWithDefaultStrategy() {
         PaymentStrategy defaultStrategy = new DefaultStrategy();
         assertEquals(66000, testATM.getATMBalance());
         Map<Denomination, Long> money = testATM.getMoney(defaultStrategy, 12700);
@@ -56,5 +57,27 @@ class ATMTest {
                 () -> testATM.getMoney(defaultStrategy, 10543));
         assertEquals("Запрошенная сумма не может быть выдана", exceptionFirst.getMessage());
         assertEquals(53300, testATM.getATMBalance());
+    }
+
+    @Test
+    void testGetMoneyWithDenominationStrategy() {
+        Map<Denomination, Long> requestedBanknotes = Map.of(THOUSAND, 10L);
+        PaymentStrategy denominationStrategy = new DenominationStrategy(requestedBanknotes);
+
+        assertEquals(66000, testATM.getATMBalance());
+        Map<Denomination, Long> money = testATM.getMoney(denominationStrategy, 12700);
+        assertEquals(53300, testATM.getATMBalance());
+        assertEquals(Map.of(THOUSAND, 10L, FIVE_HUNDRED, 5L, HUNDRED, 2L), money);
+    }
+
+    @Test
+    void testGetMoneyWithDenominationStrategyFailed() {
+        Map<Denomination, Long> requestedBanknotes = Map.of(THOUSAND, 12L);
+        PaymentStrategy denominationStrategy = new DenominationStrategy(requestedBanknotes);
+
+        Exception exceptionFirst = assertThrows(ATMServiceException.class,
+                () -> testATM.getMoney(denominationStrategy, 12700));
+        assertEquals("Сумма не может быть выдана запрошенными купюрами", exceptionFirst.getMessage());
+        assertEquals(66000, testATM.getATMBalance());
     }
 }
