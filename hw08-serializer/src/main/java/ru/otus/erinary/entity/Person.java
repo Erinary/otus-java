@@ -9,6 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Person {
 
+    private final static String STATIC_FIELD = "Just a static field";
     private String name;
     private int age;
     private String city;
