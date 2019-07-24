@@ -2,13 +2,11 @@ package ru.otus.erinary.serializer;
 
 import ru.otus.erinary.entity.Person;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonWriter;
+import javax.json.*;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 
 class MySerializer {
 
@@ -33,7 +31,18 @@ class MySerializer {
             if (!modifiers.contains(STATIC) && !modifiers.contains(TRANSIENT)) {
                 try {
                     field.setAccessible(true);
-                    builder.add(field.getName(), field.get(person).toString());
+                    if (Collection.class.isAssignableFrom(field.getType())) {
+                        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+                        Collection collection = (Collection) field.get(person);
+                        for (Object o : collection) {
+                            arrayBuilder.add(o.toString());
+                        }
+                        builder.add(field.getName(), arrayBuilder);
+                    } else if (field.getType().isArray()) {
+                        //TODO массивы
+                    } else {
+                        builder.add(field.getName(), field.get(person).toString());
+                    }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } finally {
