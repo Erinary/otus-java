@@ -15,5 +15,6 @@ public class Person {
     private String city;
     private List<String> pets;
     private String[] hobbies;
+    private transient boolean isTransientSerialized;
 
 }

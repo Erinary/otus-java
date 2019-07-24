@@ -21,7 +21,8 @@ class MySerializerTest {
                 25,
                 "London",
                 List.of("Cat Martin", "Parrot Duke"),
-                hobbies
+                hobbies,
+                false
         );
 
         String json = serializer.toJson(person);
