@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static ru.otus.erinary.atm.Cell.Denomination;
+import ru.otus.erinary.atm.Denomination;
 
 /**
  * Стратегия выдачи денег по умолчанию - минимальным кол-вом банкнот

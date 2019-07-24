@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.otus.erinary.atm.ATM;
 import ru.otus.erinary.atm.Cell;
-import ru.otus.erinary.atm.Cell.Denomination;
+import ru.otus.erinary.atm.Denomination;
 import ru.otus.erinary.atm.exception.ATMServiceException;
 import ru.otus.erinary.atm.payment.DefaultStrategy;
 import ru.otus.erinary.atm.payment.DenominationStrategy;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static ru.otus.erinary.atm.Cell.Denomination.*;
+import static ru.otus.erinary.atm.Denomination.*;
 
 class ATMTest {
 

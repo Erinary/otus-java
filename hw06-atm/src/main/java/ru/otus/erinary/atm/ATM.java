@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static ru.otus.erinary.atm.Cell.Denomination;
-
 public class ATM {
 
     private Map<Denomination, Cell> cells;

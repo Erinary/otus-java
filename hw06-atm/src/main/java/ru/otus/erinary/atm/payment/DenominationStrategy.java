@@ -1,6 +1,6 @@
 package ru.otus.erinary.atm.payment;
 
-import ru.otus.erinary.atm.Cell.Denomination;
+import ru.otus.erinary.atm.Denomination;
 import ru.otus.erinary.atm.exception.ATMServiceException;
 
 import java.util.HashMap;
