@@ -2,14 +2,13 @@ package ru.otus.erinary.atm.payment;
 
 import ru.otus.erinary.atm.ATM;
 import ru.otus.erinary.atm.Cell;
+import ru.otus.erinary.atm.Denomination;
 import ru.otus.erinary.atm.exception.ATMServiceException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import ru.otus.erinary.atm.Denomination;
 
 /**
  * Стратегия выдачи денег по умолчанию - минимальным кол-вом банкнот
@@ -26,8 +25,7 @@ public class DefaultStrategy implements PaymentStrategy {
     @Override
     public Map<Denomination, Long> getMoney(long requestedAmount) {
         Map<Denomination, Long> result = new HashMap<>();
-        List<Cell> sortedCells = atm.getCells().entrySet().stream().sorted((e1, e2) -> e2.getKey().compareTo(e1.getKey()))
-                .map(Map.Entry::getValue).collect(Collectors.toList());
+        List<Cell> sortedCells = new ArrayList<>(atm.getCells().values());
         long rest = requestedAmount;
         for (Cell cell : sortedCells) {
             long multiplier = rest / cell.getDenomination().value;

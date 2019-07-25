@@ -4,6 +4,7 @@ import ru.otus.erinary.atm.payment.PaymentStrategy;
 
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class ATM {
@@ -11,7 +12,8 @@ public class ATM {
     private Map<Denomination, Cell> cells;
 
     public ATM(List<Cell> cells) {
-        this.cells = cells.stream().collect(Collectors.toMap(Cell::getDenomination, cell -> cell));
+        this.cells = new TreeMap<>((d1, d2) -> d2.value - d1.value);
+        this.cells.putAll(cells.stream().collect(Collectors.toMap(Cell::getDenomination, cell -> cell)));
     }
 
     public Map<Denomination, Cell> getCells() {
