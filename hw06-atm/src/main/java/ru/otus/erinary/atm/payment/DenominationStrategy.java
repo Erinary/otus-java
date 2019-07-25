@@ -23,10 +23,10 @@ public class DenominationStrategy extends DefaultStrategy {
         long rest = requestedAmount;
         for (Denomination denomination : requestedBanknotes.keySet()) {
             long multiplier = requestedBanknotes.get(denomination);
-            if (multiplier <= atm.getCells().get(denomination).getAmount()) {
+            if (multiplier <= getAtm().getCells().get(denomination).getAmount()) {
                 result.put(denomination, multiplier);
                 rest -= denomination.value * multiplier;
-                atm.getCells().get(denomination).removeBankNotes(multiplier);
+                getAtm().getCells().get(denomination).removeBankNotes(multiplier);
             } else {
                 throw new ATMServiceException("Сумма не может быть выдана запрошенными купюрами");
             }

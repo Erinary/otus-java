@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class DefaultStrategy implements PaymentStrategy {
 
-    ATM atm;
+    private ATM atm;
 
     @Override
     public void setATM(ATM atm) {
@@ -42,5 +42,14 @@ public class DefaultStrategy implements PaymentStrategy {
         } else {
             throw new ATMServiceException("Запрошенная сумма не может быть выдана");
         }
+    }
+
+    /**
+     * Package-private геттер для потомка
+     *
+     * @return atm
+     */
+    ATM getAtm() {
+        return atm;
     }
 }
