@@ -50,7 +50,6 @@ public class ATM {
      * @return мап с парами: номинал (ключ) - кол-во банкнот (значение)
      */
     public Map<Denomination, Long> getMoney(PaymentStrategy strategy, long requestedAmount) {
-        strategy.setATM(this);
-        return strategy.getMoney(requestedAmount);
+        return strategy.getMoney(this, requestedAmount);
     }
 }

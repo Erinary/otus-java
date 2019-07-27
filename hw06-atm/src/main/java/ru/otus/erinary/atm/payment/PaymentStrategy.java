@@ -10,8 +10,6 @@ import java.util.Map;
  */
 public interface PaymentStrategy {
 
-    void setATM(ATM atm);
-
-    Map<Denomination, Long> getMoney(long requestedAmount);
+    Map<Denomination, Long> getMoney(ATM atm, long requestedAmount);
 
 }

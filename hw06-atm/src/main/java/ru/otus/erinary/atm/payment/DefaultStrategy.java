@@ -15,15 +15,8 @@ import java.util.Map;
  */
 public class DefaultStrategy implements PaymentStrategy {
 
-    private ATM atm;
-
     @Override
-    public void setATM(ATM atm) {
-        this.atm = atm;
-    }
-
-    @Override
-    public Map<Denomination, Long> getMoney(long requestedAmount) {
+    public Map<Denomination, Long> getMoney(ATM atm, long requestedAmount) {
         Map<Denomination, Long> result = new HashMap<>();
         List<Cell> sortedCells = new ArrayList<>(atm.getCells().values());
         long rest = requestedAmount;
@@ -42,14 +35,5 @@ public class DefaultStrategy implements PaymentStrategy {
         } else {
             throw new ATMServiceException("Запрошенная сумма не может быть выдана");
         }
-    }
-
-    /**
-     * Package-private геттер для потомка
-     *
-     * @return atm
-     */
-    ATM getAtm() {
-        return atm;
     }
 }
