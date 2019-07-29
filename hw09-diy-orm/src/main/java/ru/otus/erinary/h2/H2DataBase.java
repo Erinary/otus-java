@@ -4,28 +4,33 @@ import ru.otus.erinary.model.User;
 
 import java.sql.*;
 
-class H2DataBase {
+@SuppressWarnings({"SqlNoDataSourceInspection", "SqlResolve"})
+public class H2DataBase {
 
     private static final String URL = "jdbc:h2:mem:";
     private final Connection connection;
 
-    H2DataBase() throws SQLException {
+    public H2DataBase() throws SQLException {
         this.connection = DriverManager.getConnection(URL);
         this.connection.setAutoCommit(false);
     }
 
-    void createUserTable() throws SQLException {
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void createUserTable() throws SQLException {
         try (Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE USER(id BIGINT(20), name VARCHAR(255), age INT(3))");
+            statement.execute("CREATE TABLE USER(id BIGINT(20) AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), age INT(3))");
+            connection.commit();
         }
     }
 
-    void insertUser(long id, String name, int age) throws SQLException {
-        try (PreparedStatement pstatement = connection.prepareStatement("INSERT INTO USER(id, name, age) VALUES (?,?,?)")) {
+    public void insertUser(String name, int age) throws SQLException {
+        try (PreparedStatement pstatement = connection.prepareStatement("INSERT INTO USER(name, age) VALUES (?, ?)")) {
             Savepoint savePoint = connection.setSavepoint("savePointName");
-            pstatement.setLong(1, id);
-            pstatement.setString(2, name);
-            pstatement.setInt(3, age);
+            pstatement.setString(1, name);
+            pstatement.setInt(2, age);
             try {
                 pstatement.executeUpdate();
                 connection.commit();
@@ -36,7 +41,7 @@ class H2DataBase {
         }
     }
 
-    User selectUserById(long id) throws SQLException {
+    public User selectUserById(long id) throws SQLException {
         User result = null;
         try (PreparedStatement pstatement = connection.prepareStatement("SELECT * FROM user WHERE id = ?")) {
             pstatement.setLong(1, id);
@@ -53,7 +58,7 @@ class H2DataBase {
         return result;
     }
 
-    void close() throws SQLException {
+    public void close() throws SQLException {
         connection.close();
     }
 }
