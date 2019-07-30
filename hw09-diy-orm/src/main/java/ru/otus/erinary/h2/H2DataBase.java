@@ -27,12 +27,12 @@ public class H2DataBase {
     }
 
     public void insertUser(String name, int age) throws SQLException {
-        try (PreparedStatement pstatement = connection.prepareStatement("INSERT INTO USER(name, age) VALUES (?, ?)")) {
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO USER(name, age) VALUES (?, ?)")) {
             Savepoint savePoint = connection.setSavepoint("savePointName");
-            pstatement.setString(1, name);
-            pstatement.setInt(2, age);
+            statement.setString(1, name);
+            statement.setInt(2, age);
             try {
-                pstatement.executeUpdate();
+                statement.executeUpdate();
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback(savePoint);
@@ -43,9 +43,9 @@ public class H2DataBase {
 
     public User selectUserById(long id) throws SQLException {
         User result = null;
-        try (PreparedStatement pstatement = connection.prepareStatement("SELECT * FROM user WHERE id = ?")) {
-            pstatement.setLong(1, id);
-            try (ResultSet resultSet = pstatement.executeQuery()) {
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM user WHERE id = ?")) {
+            statement.setLong(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     result = new User(
                             resultSet.getLong("id"),

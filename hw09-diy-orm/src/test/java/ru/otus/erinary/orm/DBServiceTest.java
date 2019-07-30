@@ -9,10 +9,12 @@ import ru.otus.erinary.model.User;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class DBServiceTest {
 
     private static H2DataBase dataBase;
+    private static DBService<User> userDBService;
 
     @BeforeAll
     static void setup() throws SQLException {
@@ -21,6 +23,7 @@ class DBServiceTest {
         dataBase.createUserTable();
         System.out.println("Table 'User' created");
         dataBase.insertUser("John Doe", 25);
+        userDBService = new DBServiceImpl<>(dataBase.getConnection(), User.class);
     }
 
     @AfterAll
@@ -31,8 +34,15 @@ class DBServiceTest {
     @Test
     void testUserInsertion() throws SQLException {
         User janeDoe = new User("Jane Doe", 23);
-        DBService<User> dbService = new DBServiceImpl<>(dataBase.getConnection(), User.class);
-        dbService.create(janeDoe);
+        userDBService = new DBServiceImpl<>(dataBase.getConnection(), User.class);
+        userDBService.create(janeDoe);
         assertEquals(janeDoe, dataBase.selectUserById(2));
+    }
+
+    @Test
+    void testUserSelection() throws SQLException {
+        User johnDoe = dataBase.selectUserById(1);
+        assertEquals(johnDoe, userDBService.load(1, User.class));
+        assertNull(userDBService.load(100, User.class));
     }
 }

@@ -3,11 +3,13 @@ package ru.otus.erinary.orm;
 import ru.otus.erinary.annotation.Id;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DBServiceImpl<T> implements DBService<T> {
 
@@ -54,7 +56,7 @@ public class DBServiceImpl<T> implements DBService<T> {
             }
             System.out.println("ObjectData was successfully inserted");
         } catch (SQLException | IllegalAccessException e) {
-            System.out.println("Failed to insert into DB");
+            System.out.println("Failed to insert entity into database");
             throw new DBServiceException(e.getMessage(), e);
         }
     }
@@ -71,7 +73,31 @@ public class DBServiceImpl<T> implements DBService<T> {
 
     @Override
     public T load(long id, Class<T> t1Class) {
-        return null;
+        T result = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_QUERY)) {
+            statement.setObject(1, id);
+            statement.executeQuery();
+            try (ResultSet resultSet = statement.getResultSet()) {
+                if (resultSet.next()) {
+                    result = t1Class.getConstructor().newInstance();
+                    for (Field field : t1Class.getDeclaredFields()) {
+                        try {
+                            field.setAccessible(true);
+                            field.set(result, resultSet.getObject(field.getName()));
+                        } finally {
+                            field.setAccessible(false);
+                        }
+                    }
+                }
+            } catch (InvocationTargetException | InstantiationException e) {
+                System.out.println("Failed to create new entity");
+                throw new DBServiceException(e.getMessage(), e);
+            }
+        } catch (SQLException | IllegalAccessException | NoSuchMethodException e) {
+            System.out.println("Failed to select entity from database");
+            throw new DBServiceException(e.getMessage(), e);
+        }
+        return result;
     }
 
     private Field getClassIdField(Class<T> tClass) {
@@ -100,6 +126,8 @@ public class DBServiceImpl<T> implements DBService<T> {
     }
 
     private String prepareSelectQuery(String tableName) {
-        return tableName;
+        return "SELECT " + Stream.concat(Stream.of(idField), classFields.stream())
+                .map(Field::getName).collect(Collectors.joining(", ")) +
+                " FROM " + tableName + " WHERE " + idField.getName() + " = ?";
     }
 }

@@ -8,6 +8,8 @@ import ru.otus.erinary.annotation.Id;
 @AllArgsConstructor
 public class User {
 
+    public User() {}
+
     @Id
     private long id;
     private String name;
