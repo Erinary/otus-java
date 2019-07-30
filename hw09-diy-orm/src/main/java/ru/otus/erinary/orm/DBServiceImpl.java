@@ -20,10 +20,12 @@ public class DBServiceImpl<T> implements DBService<T> {
     private final Connection connection;
     private final Field idField;
     private final List<Field> classFields;
+    private final Class<T> tClass;
 
     public DBServiceImpl(Connection connection, Class<T> tClass) {
         String tableName = tClass.getSimpleName();
         this.connection = connection;
+        this.tClass = tClass;
         this.idField = getClassIdField(tClass);
         this.classFields = getClassFields(tClass);
         this.INSERT_QUERY = prepareInsertQuery(tableName);
@@ -46,57 +48,72 @@ public class DBServiceImpl<T> implements DBService<T> {
                     }
                 }
             }
-            System.out.println("ObjectData was successfully inserted");
         } catch (SQLException | IllegalAccessException e) {
             System.out.println("Failed to insert entity into database");
             throw new DBServiceException(e.getMessage(), e);
         }
+        System.out.println("ObjectData was successfully inserted");
     }
 
     @Override
     public void update(T objectData) {
-        try (PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
-            fillStatementWithFieldValues(statement, objectData);
-            try {
-                idField.setAccessible(true);
-                statement.setObject(classFields.size() + 1, idField.get(objectData));
-            } finally {
-                idField.setAccessible(false);
+        try {
+            idField.setAccessible(true);
+            long id = (Long) idField.get(objectData);
+            if (load(id) != null) {
+                try (PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
+                    fillStatementWithFieldValues(statement, objectData);
+                    try {
+                        idField.setAccessible(true);
+                        statement.setObject(classFields.size() + 1, idField.get(objectData));
+                    } finally {
+                        idField.setAccessible(false);
+                    }
+                    statement.executeUpdate();
+                } catch (SQLException | IllegalAccessException e) {
+                    System.out.println("Failed to update entity in database");
+                    throw new DBServiceException(e.getMessage(), e);
+                }
+            } else {
+                throw new DBServiceException("Entity doesn't exist in database");
             }
-            statement.executeUpdate();
-        } catch (SQLException | IllegalAccessException e) {
-            System.out.println("Failed to update entity in database");
+        } catch (IllegalAccessException e) {
+            System.out.println("Error while preforming request");
             throw new DBServiceException(e.getMessage(), e);
+        } finally {
+            idField.setAccessible(false);
         }
-    }
-
-    private void fillStatementWithFieldValues(PreparedStatement statement, T objectData) throws IllegalAccessException, SQLException {
-        for (int i = 1; i <= classFields.size(); ++i) {
-            Field field = classFields.get(i - 1);
-            try {
-                field.setAccessible(true);
-                statement.setObject(i, field.get(objectData));
-            } finally {
-                field.setAccessible(false);
-            }
-        }
+        System.out.println("ObjectData was successfully updated");
     }
 
     @Override
     public void createOrUpdate(T objectData) {
-
+        try {
+            idField.setAccessible(true);
+            long id = (Long) idField.get(objectData);
+            if (load(id) != null) {
+                update(objectData);
+            } else {
+                create(objectData);
+            }
+        } catch (IllegalAccessException e) {
+            System.out.println("Error while preforming request");
+            throw new DBServiceException(e.getMessage(), e);
+        } finally {
+            idField.setAccessible(false);
+        }
     }
 
     @Override
-    public T load(long id, Class<T> t1Class) {
+    public T load(long id) {
         T result = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_QUERY)) {
             statement.setObject(1, id);
             statement.executeQuery();
             try (ResultSet resultSet = statement.getResultSet()) {
                 if (resultSet.next()) {
-                    result = t1Class.getConstructor().newInstance();
-                    for (Field field : t1Class.getDeclaredFields()) {
+                    result = tClass.getConstructor().newInstance();
+                    for (Field field : tClass.getDeclaredFields()) {
                         try {
                             field.setAccessible(true);
                             field.set(result, resultSet.getObject(field.getName()));
@@ -114,6 +131,18 @@ public class DBServiceImpl<T> implements DBService<T> {
             throw new DBServiceException(e.getMessage(), e);
         }
         return result;
+    }
+
+    private void fillStatementWithFieldValues(PreparedStatement statement, T objectData) throws IllegalAccessException, SQLException {
+        for (int i = 1; i <= classFields.size(); ++i) {
+            Field field = classFields.get(i - 1);
+            try {
+                field.setAccessible(true);
+                statement.setObject(i, field.get(objectData));
+            } finally {
+                field.setAccessible(false);
+            }
+        }
     }
 
     private Field getClassIdField(Class<T> tClass) {

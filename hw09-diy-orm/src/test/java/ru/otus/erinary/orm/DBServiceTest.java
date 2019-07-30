@@ -43,8 +43,8 @@ class DBServiceTest {
     @Test
     void testUserSelection() throws SQLException {
         User johnDoe = dataBase.selectUserById(1);
-        assertEquals(johnDoe, userDBService.load(1, User.class));
-        assertNull(userDBService.load(100, User.class));
+        assertEquals(johnDoe, userDBService.load(1));
+        assertNull(userDBService.load(100));
     }
 
     @Test
@@ -53,5 +53,17 @@ class DBServiceTest {
         userForUpdate.setName("John Bull");
         userDBService.update(userForUpdate);
         assertEquals(userForUpdate, dataBase.selectUserById(2));
+    }
+
+    @Test
+    void testUserCreateOrUpdate() throws SQLException {
+        User newUser = new User("Alice", 17);
+        userDBService.createOrUpdate(newUser);
+        assertEquals(newUser, dataBase.selectUserById(4));
+        System.out.println(newUser);
+        newUser.setName("Bob");
+        userDBService.createOrUpdate(newUser);
+        assertEquals(newUser, dataBase.selectUserById(4));
+        System.out.println(newUser);
     }
 }

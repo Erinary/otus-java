@@ -8,5 +8,5 @@ public interface DBService<T> {
 
     void createOrUpdate(T objectData);
 
-    T load(long id, Class<T> tClass);
+    T load(long id);
 }
