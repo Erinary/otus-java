@@ -23,6 +23,7 @@ class DBServiceTest {
         dataBase.createUserTable();
         System.out.println("Table 'User' created");
         dataBase.insertUser("John Doe", 25);
+        dataBase.insertUser("Unknown", 38);
         userDBService = new DBServiceImpl<>(dataBase.getConnection(), User.class);
     }
 
@@ -36,7 +37,7 @@ class DBServiceTest {
         User janeDoe = new User("Jane Doe", 23);
         userDBService = new DBServiceImpl<>(dataBase.getConnection(), User.class);
         userDBService.create(janeDoe);
-        assertEquals(janeDoe, dataBase.selectUserById(2));
+        assertEquals(janeDoe, dataBase.selectUserById(3));
     }
 
     @Test
@@ -44,5 +45,13 @@ class DBServiceTest {
         User johnDoe = dataBase.selectUserById(1);
         assertEquals(johnDoe, userDBService.load(1, User.class));
         assertNull(userDBService.load(100, User.class));
+    }
+
+    @Test
+    void testUserUpdate() throws SQLException {
+        User userForUpdate = dataBase.selectUserById(2);
+        userForUpdate.setName("John Bull");
+        userDBService.update(userForUpdate);
+        assertEquals(userForUpdate, dataBase.selectUserById(2));
     }
 }

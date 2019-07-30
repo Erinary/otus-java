@@ -34,15 +34,7 @@ public class DBServiceImpl<T> implements DBService<T> {
     @Override
     public void create(T objectData) {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
-            for (int i = 1; i <= classFields.size(); ++i) {
-                Field field = classFields.get(i - 1);
-                try {
-                    field.setAccessible(true);
-                    statement.setObject(i, field.get(objectData));
-                } finally {
-                    field.setAccessible(false);
-                }
-            }
+            fillStatementWithFieldValues(statement, objectData);
             statement.executeUpdate();
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -63,7 +55,31 @@ public class DBServiceImpl<T> implements DBService<T> {
 
     @Override
     public void update(T objectData) {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
+            fillStatementWithFieldValues(statement, objectData);
+            try {
+                idField.setAccessible(true);
+                statement.setObject(classFields.size() + 1, idField.get(objectData));
+            } finally {
+                idField.setAccessible(false);
+            }
+            statement.executeUpdate();
+        } catch (SQLException | IllegalAccessException e) {
+            System.out.println("Failed to update entity in database");
+            throw new DBServiceException(e.getMessage(), e);
+        }
+    }
 
+    private void fillStatementWithFieldValues(PreparedStatement statement, T objectData) throws IllegalAccessException, SQLException {
+        for (int i = 1; i <= classFields.size(); ++i) {
+            Field field = classFields.get(i - 1);
+            try {
+                field.setAccessible(true);
+                statement.setObject(i, field.get(objectData));
+            } finally {
+                field.setAccessible(false);
+            }
+        }
     }
 
     @Override
@@ -122,7 +138,9 @@ public class DBServiceImpl<T> implements DBService<T> {
     }
 
     private String prepareUpdateQuery(String tableName) {
-        return tableName;
+        return "UPDATE " + tableName + " SET " + classFields.stream().
+                map(field -> field.getName() + " = ?").collect(Collectors.joining(", "))
+                + " WHERE " + idField.getName() + " = ?";
     }
 
     private String prepareSelectQuery(String tableName) {
