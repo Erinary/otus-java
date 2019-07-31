@@ -1,13 +1,9 @@
 package ru.otus.erinary.orm;
 
-import ru.otus.erinary.annotation.Id;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,16 +14,12 @@ public class DBServiceImpl<T> implements DBService<T> {
     private final String SELECT_QUERY;
 
     private final Connection connection;
-    private final Field idField;
-    private final List<Field> classFields;
-    private final Class<T> tClass;
+    private final ClassMetaData<T> metaData;
 
     public DBServiceImpl(Connection connection, Class<T> tClass) {
         String tableName = tClass.getSimpleName();
         this.connection = connection;
-        this.tClass = tClass;
-        this.idField = getClassIdField(tClass);
-        this.classFields = getClassFields(tClass);
+        this.metaData = new ClassMetaData<>(tClass);
         this.INSERT_QUERY = prepareInsertQuery(tableName);
         this.UPDATE_QUERY = prepareUpdateQuery(tableName);
         this.SELECT_QUERY = prepareSelectQuery(tClass.getSimpleName());
@@ -41,10 +33,10 @@ public class DBServiceImpl<T> implements DBService<T> {
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     try {
-                        idField.setAccessible(true);
-                        idField.set(objectData, generatedKeys.getObject(1));
+                        metaData.getIdField().setAccessible(true);
+                        metaData.getIdField().set(objectData, generatedKeys.getObject(1));
                     } finally {
-                        idField.setAccessible(false);
+                        metaData.getIdField().setAccessible(false);
                     }
                 }
             }
@@ -58,16 +50,17 @@ public class DBServiceImpl<T> implements DBService<T> {
     @Override
     public void update(T objectData) {
         try {
-            idField.setAccessible(true);
-            long id = (Long) idField.get(objectData);
+            metaData.getIdField().setAccessible(true);
+            long id = (Long) metaData.getIdField().get(objectData);
             if (load(id) != null) {
                 try (PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
                     fillStatementWithFieldValues(statement, objectData);
                     try {
-                        idField.setAccessible(true);
-                        statement.setObject(classFields.size() + 1, idField.get(objectData));
+                        metaData.getIdField().setAccessible(true);
+                        statement.setObject(metaData.getClassFields().size() + 1,
+                                metaData.getIdField().get(objectData));
                     } finally {
-                        idField.setAccessible(false);
+                        metaData.getIdField().setAccessible(false);
                     }
                     statement.executeUpdate();
                 } catch (SQLException | IllegalAccessException e) {
@@ -81,7 +74,7 @@ public class DBServiceImpl<T> implements DBService<T> {
             System.out.println("Error while preforming request");
             throw new DBServiceException(e.getMessage(), e);
         } finally {
-            idField.setAccessible(false);
+            metaData.getIdField().setAccessible(false);
         }
         System.out.println("ObjectData was successfully updated");
     }
@@ -89,8 +82,8 @@ public class DBServiceImpl<T> implements DBService<T> {
     @Override
     public void createOrUpdate(T objectData) {
         try {
-            idField.setAccessible(true);
-            long id = (Long) idField.get(objectData);
+            metaData.getIdField().setAccessible(true);
+            long id = (Long) metaData.getIdField().get(objectData);
             if (load(id) != null) {
                 update(objectData);
             } else {
@@ -100,7 +93,7 @@ public class DBServiceImpl<T> implements DBService<T> {
             System.out.println("Error while preforming request");
             throw new DBServiceException(e.getMessage(), e);
         } finally {
-            idField.setAccessible(false);
+            metaData.getIdField().setAccessible(false);
         }
     }
 
@@ -112,8 +105,8 @@ public class DBServiceImpl<T> implements DBService<T> {
             statement.executeQuery();
             try (ResultSet resultSet = statement.getResultSet()) {
                 if (resultSet.next()) {
-                    result = tClass.getConstructor().newInstance();
-                    for (Field field : tClass.getDeclaredFields()) {
+                    result = metaData.getTClass().getConstructor().newInstance();
+                    for (Field field : metaData.getTClass().getDeclaredFields()) {
                         try {
                             field.setAccessible(true);
                             field.set(result, resultSet.getObject(field.getName()));
@@ -134,8 +127,8 @@ public class DBServiceImpl<T> implements DBService<T> {
     }
 
     private void fillStatementWithFieldValues(PreparedStatement statement, T objectData) throws IllegalAccessException, SQLException {
-        for (int i = 1; i <= classFields.size(); ++i) {
-            Field field = classFields.get(i - 1);
+        for (int i = 1; i <= metaData.getClassFields().size(); ++i) {
+            Field field = metaData.getClassFields().get(i - 1);
             try {
                 field.setAccessible(true);
                 statement.setObject(i, field.get(objectData));
@@ -145,36 +138,21 @@ public class DBServiceImpl<T> implements DBService<T> {
         }
     }
 
-    private Field getClassIdField(Class<T> tClass) {
-        for (Field field : tClass.getDeclaredFields()) {
-            if (field.isAnnotationPresent(Id.class)) {
-                return field;
-            }
-        }
-        throw new DBServiceException("No '@Id' annotation for class");
-    }
-
-    private List<Field> getClassFields(Class<T> tClass) {
-        return Arrays.stream(tClass.getDeclaredFields())
-                .filter(field -> !field.isAnnotationPresent(Id.class))
-                .collect(Collectors.toList());
-    }
-
     private String prepareInsertQuery(String tableName) {
         return "INSERT INTO " + tableName + "(" +
-                classFields.stream().map(Field::getName).collect(Collectors.joining(",")) +
-                ")" + " VALUES (" + String.join(",", Collections.nCopies(classFields.size(), "?")) + ")";
+                metaData.getClassFields().stream().map(Field::getName).collect(Collectors.joining(",")) +
+                ")" + " VALUES (" + String.join(",", Collections.nCopies(metaData.getClassFields().size(), "?")) + ")";
     }
 
     private String prepareUpdateQuery(String tableName) {
-        return "UPDATE " + tableName + " SET " + classFields.stream().
+        return "UPDATE " + tableName + " SET " + metaData.getClassFields().stream().
                 map(field -> field.getName() + " = ?").collect(Collectors.joining(", "))
-                + " WHERE " + idField.getName() + " = ?";
+                + " WHERE " + metaData.getIdField().getName() + " = ?";
     }
 
     private String prepareSelectQuery(String tableName) {
-        return "SELECT " + Stream.concat(Stream.of(idField), classFields.stream())
+        return "SELECT " + Stream.concat(Stream.of(metaData.getIdField()), metaData.getClassFields().stream())
                 .map(Field::getName).collect(Collectors.joining(", ")) +
-                " FROM " + tableName + " WHERE " + idField.getName() + " = ?";
+                " FROM " + tableName + " WHERE " + metaData.getIdField().getName() + " = ?";
     }
 }
