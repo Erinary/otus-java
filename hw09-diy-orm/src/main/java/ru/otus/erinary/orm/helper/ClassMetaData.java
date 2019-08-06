@@ -1,4 +1,4 @@
-package ru.otus.erinary.orm;
+package ru.otus.erinary.orm.helper;
 
 import lombok.Getter;
 import ru.otus.erinary.annotation.Id;

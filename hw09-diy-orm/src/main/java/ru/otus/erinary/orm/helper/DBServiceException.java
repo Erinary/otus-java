@@ -1,4 +1,4 @@
-package ru.otus.erinary.orm;
+package ru.otus.erinary.orm.helper;
 
 public class DBServiceException extends RuntimeException {
 

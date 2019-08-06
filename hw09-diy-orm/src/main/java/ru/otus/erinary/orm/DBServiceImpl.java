@@ -1,11 +1,13 @@
 package ru.otus.erinary.orm;
 
+import ru.otus.erinary.orm.helper.ClassMetaData;
+import ru.otus.erinary.orm.helper.DBServiceException;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
-import java.util.Collections;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static ru.otus.erinary.orm.helper.DBServiceHelper.*;
 
 public class DBServiceImpl<T> implements DBService<T> {
 
@@ -20,9 +22,9 @@ public class DBServiceImpl<T> implements DBService<T> {
         String tableName = tClass.getSimpleName();
         this.connection = connection;
         this.metaData = new ClassMetaData<>(tClass);
-        this.INSERT_QUERY = prepareInsertQuery(tableName);
-        this.UPDATE_QUERY = prepareUpdateQuery(tableName);
-        this.SELECT_QUERY = prepareSelectQuery(tClass.getSimpleName());
+        this.INSERT_QUERY = prepareInsertQuery(tableName, metaData);
+        this.UPDATE_QUERY = prepareUpdateQuery(tableName, metaData);
+        this.SELECT_QUERY = prepareSelectQuery(tClass.getSimpleName(), metaData);
     }
 
     @Override
@@ -136,23 +138,5 @@ public class DBServiceImpl<T> implements DBService<T> {
                 field.setAccessible(false);
             }
         }
-    }
-
-    private String prepareInsertQuery(String tableName) {
-        return "INSERT INTO " + tableName + "(" +
-                metaData.getClassFields().stream().map(Field::getName).collect(Collectors.joining(",")) +
-                ")" + " VALUES (" + String.join(",", Collections.nCopies(metaData.getClassFields().size(), "?")) + ")";
-    }
-
-    private String prepareUpdateQuery(String tableName) {
-        return "UPDATE " + tableName + " SET " + metaData.getClassFields().stream().
-                map(field -> field.getName() + " = ?").collect(Collectors.joining(", "))
-                + " WHERE " + metaData.getIdField().getName() + " = ?";
-    }
-
-    private String prepareSelectQuery(String tableName) {
-        return "SELECT " + Stream.concat(Stream.of(metaData.getIdField()), metaData.getClassFields().stream())
-                .map(Field::getName).collect(Collectors.joining(", ")) +
-                " FROM " + tableName + " WHERE " + metaData.getIdField().getName() + " = ?";
     }
 }
