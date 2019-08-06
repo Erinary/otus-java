@@ -25,4 +25,8 @@ public class DBServiceHelper {
                 " FROM " + tableName + " WHERE " + metaData.getIdField().getName() + " = ?";
     }
 
+    public static <T> String prepareExistQuery(String tableName, ClassMetaData<T> metaData) {
+        return "SELECT 1 FROM " + tableName + " WHERE " + metaData.getIdField().getName() + " = ?";
+    }
+
 }

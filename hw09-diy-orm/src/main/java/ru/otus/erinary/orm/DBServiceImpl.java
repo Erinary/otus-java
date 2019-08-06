@@ -14,6 +14,7 @@ public class DBServiceImpl<T> implements DBService<T> {
     private final String INSERT_QUERY;
     private final String UPDATE_QUERY;
     private final String SELECT_QUERY;
+    private final String EXIST_QUERY;
 
     private final Connection connection;
     private final ClassMetaData<T> metaData;
@@ -25,6 +26,7 @@ public class DBServiceImpl<T> implements DBService<T> {
         this.INSERT_QUERY = prepareInsertQuery(tableName, metaData);
         this.UPDATE_QUERY = prepareUpdateQuery(tableName, metaData);
         this.SELECT_QUERY = prepareSelectQuery(tClass.getSimpleName(), metaData);
+        this.EXIST_QUERY = prepareExistQuery(tableName, metaData);
     }
 
     @Override
@@ -54,7 +56,7 @@ public class DBServiceImpl<T> implements DBService<T> {
         try {
             metaData.getIdField().setAccessible(true);
             long id = (Long) metaData.getIdField().get(objectData);
-            if (load(id) != null) {
+            if (isExist(id)) {
                 try (PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
                     fillStatementWithFieldValues(statement, objectData);
                     try {
@@ -86,7 +88,7 @@ public class DBServiceImpl<T> implements DBService<T> {
         try {
             metaData.getIdField().setAccessible(true);
             long id = (Long) metaData.getIdField().get(objectData);
-            if (load(id) != null) {
+            if (isExist(id)) {
                 update(objectData);
             } else {
                 create(objectData);
@@ -122,6 +124,23 @@ public class DBServiceImpl<T> implements DBService<T> {
                 throw new DBServiceException(e.getMessage(), e);
             }
         } catch (SQLException | IllegalAccessException | NoSuchMethodException e) {
+            System.out.println("Failed to select entity from database");
+            throw new DBServiceException(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    private boolean isExist(long id) {
+        boolean result = false;
+        try( PreparedStatement statement = connection.prepareStatement(EXIST_QUERY)) {
+            statement.setLong(1, id);
+            statement.executeQuery();
+            try(ResultSet resultSet = statement.getResultSet()) {
+                if (resultSet.next()) {
+                    result = true;
+                }
+            }
+        } catch (SQLException e) {
             System.out.println("Failed to select entity from database");
             throw new DBServiceException(e.getMessage(), e);
         }
