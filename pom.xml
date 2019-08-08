@@ -17,6 +17,7 @@
         <module>hw06-atm</module>
         <module>hw08-serializer</module>
         <module>hw09-diy-orm</module>
+        <module>hw14-sequence-of-numbers</module>
     </modules>
 
     <properties>
