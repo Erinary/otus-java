@@ -18,8 +18,8 @@ class H2DataBaseTest {
     void setup() throws SQLException {
         dataBase = new H2DataBase();
         System.out.println("H2DataBase created");
-        dataBase.createUserTable();
-        System.out.println("Table 'User' created");
+        dataBase.createTables();
+        System.out.println("Tables 'Users', 'Addresses', 'Phones' created");
     }
 
     @AfterEach

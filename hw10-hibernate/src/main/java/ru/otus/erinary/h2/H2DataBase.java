@@ -7,9 +7,22 @@ import java.sql.*;
 @SuppressWarnings({"SqlNoDataSourceInspection", "SqlResolve"})
 public class H2DataBase {
 
-    private static final String CREATE_USER_TABLE = "CREATE TABLE user(id BIGINT(20) AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), age INT(3))";
-    private static final String INSERT_USER = "INSERT INTO user(name, age) VALUES (?, ?)";
-    private static final String SELECT_USER = "SELECT * FROM user WHERE id = ?";
+    private static final String CREATE_TABLES = "CREATE TABLE users(id BIGINT(20) AUTO_INCREMENT PRIMARY KEY, " +
+            "name VARCHAR(255) NOT NULL, age INT(3) NOT NULL); " +
+            "CREATE TABLE addresses(id BIGINT(20) AUTO_INCREMENT PRIMARY KEY, " +
+            "street VARCHAR(255) NOT NULL); " +
+            "CREATE TABLE phones(id BIGINT(20) AUTO_INCREMENT PRIMARY KEY, " +
+            "phone_number VARCHAR(255), user_id BIGINT(20), FOREIGN KEY (user_id) REFERENCES users(id))";
+
+    private static final String INSERT_USER = "INSERT INTO users(name, age) VALUES (?, ?)";
+    private static final String SELECT_USER = "SELECT * FROM users WHERE id = ?";
+
+    private static final String INSERT_ADDRESS = "INSERT INTO addresses(street) VALUES(?)";
+    private static final String SELECT_ADDRESS = "SELECT * FROM addresses WHERE id = ?";
+
+    private static final String INSERT_PHONE = "INSERT INTO phones(phone_number, user_id) VALUES(?, ?)";
+    private static final String SELECT_PHONE = "SELECT * FROM phones WHERE id = ?";
+
 
     private static final String URL = "jdbc:h2:mem:";
     private final Connection connection;
@@ -23,9 +36,9 @@ public class H2DataBase {
         return connection;
     }
 
-    public void createUserTable() throws SQLException {
+    public void createTables() throws SQLException {
         try (Statement statement = connection.createStatement()) {
-            statement.execute(CREATE_USER_TABLE);
+            statement.execute(CREATE_TABLES);
             connection.commit();
         }
     }
