@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -22,15 +21,16 @@ public class User {
 
     private int age;
 
-//    @OneToOne
-//    @PrimaryKeyJoinColumn
-//    private Address address;
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Address address;
 
 //    @OneToMany
 //    private Set<Phone> phones;
 
-    public User(String name, int age) {
+    public User(String name, int age, Address address) {
         this.name = name;
         this.age = age;
+        this.address = address;
     }
 }

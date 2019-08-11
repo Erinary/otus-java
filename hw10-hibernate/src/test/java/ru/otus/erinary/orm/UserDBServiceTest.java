@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.otus.erinary.h2.H2DataBase;
+import ru.otus.erinary.model.Address;
 import ru.otus.erinary.model.User;
 
 import java.sql.SQLException;
@@ -23,7 +24,6 @@ class UserDBServiceTest {
         dataBase = new H2DataBase(DB_URL);
         sessionFactory = HibernateUtil.getSessionFactory(DB_URL);
         userDBService = new DBServiceImpl<>(sessionFactory, User.class);
-        dataBase.insertUser("John Doe", 25);
     }
 
     @AfterEach
@@ -33,16 +33,22 @@ class UserDBServiceTest {
     }
 
     @Test
-    void testUserSelection() {
+    void testUserSelection() throws SQLException {
+        dataBase.insertUser(1, "John Doe", 25);
+        dataBase.insertAddress(1, "Some Bridge Rd");
         User johnDoe = userDBService.load(1);
         assertEquals("John Doe", johnDoe.getName());
         assertEquals(25, johnDoe.getAge());
+        assertEquals("Some Bridge Rd", johnDoe.getAddress().getStreet());
     }
 
     @Test
     void testUserInsertion() throws SQLException {
-        User janeDoe = new User("Jane Doe", 23);
+        Address address = new Address("Another St");
+        User janeDoe = new User("Jane Doe", 23, address);
         userDBService.create(janeDoe);
-        assertEquals(janeDoe, dataBase.selectUserById(2));
+        User expected = dataBase.selectUserById(janeDoe.getId());
+        expected.setAddress(dataBase.selectAddressById(janeDoe.getId()));
+        assertEquals(janeDoe, expected);
     }
 }

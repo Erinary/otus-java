@@ -18,7 +18,7 @@ public class HibernateUtil {
         MetadataSources metadataSources = new MetadataSources(serviceRegistry);
         return metadataSources
                 .addAnnotatedClass(User.class)
-//                .addAnnotatedClass(Address.class)
+                .addAnnotatedClass(Address.class)
 //                .addAnnotatedClass(Phone.class)
                 .getMetadataBuilder().build().getSessionFactoryBuilder().build();
     }
