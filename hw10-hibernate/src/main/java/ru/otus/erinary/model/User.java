@@ -15,7 +15,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String name;
@@ -24,8 +24,13 @@ public class User {
 
 //    @OneToOne
 //    @PrimaryKeyJoinColumn
-    private Address address;
+//    private Address address;
 
-    private Set<Phone> phones;
+//    @OneToMany
+//    private Set<Phone> phones;
 
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
 }
