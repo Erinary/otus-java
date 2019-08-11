@@ -1,9 +1,12 @@
 package ru.otus.erinary.h2;
 
 import ru.otus.erinary.model.Address;
+import ru.otus.erinary.model.Phone;
 import ru.otus.erinary.model.User;
 
 import java.sql.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @SuppressWarnings({"SqlNoDataSourceInspection", "SqlResolve"})
 public class H2DataBase {
@@ -14,8 +17,8 @@ public class H2DataBase {
     private static final String INSERT_ADDRESS = "INSERT INTO addresses(id, street) VALUES(?, ?)";
     private static final String SELECT_ADDRESS = "SELECT * FROM addresses WHERE id = ?";
 
-    private static final String INSERT_PHONE = "INSERT INTO phones(id, phone_number, user_id) VALUES(?, ?, ?)";
-    private static final String SELECT_PHONE = "SELECT * FROM phones WHERE id = ?";
+    private static final String INSERT_PHONE = "INSERT INTO phones(id, number, user_id) VALUES(?, ?, ?)";
+    private static final String SELECT_PHONE = "SELECT * FROM phones WHERE user_id = ?";
     private final Connection connection;
 
     public H2DataBase(String URL) throws SQLException {
@@ -46,12 +49,12 @@ public class H2DataBase {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     result = new User(
-                            resultSet.getLong("id"),
                             resultSet.getString("name"),
                             resultSet.getInt("age"),
+                            null,
                             null
-//                            null
                     );
+                    result.setId(resultSet.getLong("id"));
                 }
             }
         }
@@ -82,6 +85,38 @@ public class H2DataBase {
                     result = new Address(
                             resultSet.getLong("id"),
                             resultSet.getString("street")
+                    );
+                }
+            }
+        }
+        return result;
+    }
+
+    public void insertPhone(long id, String number, long userId) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(INSERT_PHONE)) {
+            Savepoint savePoint = connection.setSavepoint("savePointName");
+            statement.setLong(1, id);
+            statement.setString(2, number);
+            statement.setLong(3, userId);
+            try {
+                statement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback(savePoint);
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public Set<Phone> selectPhoneByUserId(long userId) throws SQLException {
+        Set<Phone> result = new HashSet<>();
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_PHONE)) {
+            statement.setLong(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    result.add(new Phone(
+                            resultSet.getLong("id"),
+                            resultSet.getString("number"))
                     );
                 }
             }

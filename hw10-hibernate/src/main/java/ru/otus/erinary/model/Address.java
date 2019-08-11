@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

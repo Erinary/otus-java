@@ -9,5 +9,8 @@
         <property name="hibernate.show_sql">true</property>
         <property name="format_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">create</property>
+        <mapping class="ru.otus.erinary.model.User"/>
+        <mapping class="ru.otus.erinary.model.Address"/>
+        <mapping class="ru.otus.erinary.model.Phone"/>
     </session-factory>
 </hibernate-configuration>

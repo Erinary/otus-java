@@ -1,21 +1,36 @@
 package ru.otus.erinary.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "phones")
 public class Phone {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "phone_number")
+    @Column(name = "number")
     private String number;
 
-//    @ManyToOne
-//    private User user;
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
+    public Phone(String number) {
+        this.number = number;
+    }
+
+    public Phone(long id, String number) {
+        this.id = id;
+        this.number = number;
+    }
 }
