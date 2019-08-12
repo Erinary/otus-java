@@ -18,6 +18,7 @@
         <module>hw08-serializer</module>
         <module>hw09-diy-orm</module>
         <module>hw10-hibernate</module>
+        <module>hw12-web-server</module>
     </modules>
 
     <properties>

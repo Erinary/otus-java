@@ -11,6 +11,7 @@ import ru.otus.erinary.model.Phone;
 import ru.otus.erinary.model.User;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,5 +62,23 @@ class UserDBServiceTest {
         dataInBase.setAddress(dataBase.selectAddressById(janeDoe.getId()));
         dataBase.selectPhoneByUserId(janeDoe.getId()).forEach(dataInBase::addPhone);
         assertEquals(dataInBase, janeDoe);
+    }
+
+    @Test
+    @DisplayName("Select all Users")
+    void testSelectAllUsers() {
+        Set<Phone> janesPhones = Set.of(new Phone("11111111111"), new Phone("22222222222"));
+        Address janesAddress = new Address("Another St");
+        User janeDoe = new User("Jane Doe", 23, janesAddress, janesPhones);
+
+        Set<Phone> johnsPhones = Set.of(new Phone("333333333333"), new Phone("44444444444"));
+        Address johnAddresses = new Address("Some Bridge Rd");
+        User johnDoe = new User("Jane Doe", 23, johnAddresses, johnsPhones);
+
+        userDBService.create(janeDoe);
+        userDBService.create(johnDoe);
+
+        List<User> results = userDBService.loadAll();
+        assertEquals(2, results.size());
     }
 }
