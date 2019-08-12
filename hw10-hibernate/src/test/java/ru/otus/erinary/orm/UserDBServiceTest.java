@@ -3,6 +3,7 @@ package ru.otus.erinary.orm;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.erinary.h2.H2DataBase;
 import ru.otus.erinary.model.Address;
@@ -35,6 +36,7 @@ class UserDBServiceTest {
     }
 
     @Test
+    @DisplayName("Select User from Database")
     void testUserSelection() throws SQLException {
         Set<Phone> phones = Set.of(new Phone(1, "11111111111"), new Phone(2, "22222222222"));
         dataBase.insertUser(1, "John Doe", 25);
@@ -49,6 +51,7 @@ class UserDBServiceTest {
     }
 
     @Test
+    @DisplayName("Insert User into Database")
     void testUserInsertion() throws SQLException {
         Set<Phone> phones = Set.of(new Phone("11111111111"), new Phone("22222222222"));
         Address address = new Address("Another St");
