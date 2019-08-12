@@ -1,5 +1,6 @@
 package ru.otus.erinary.model;
 
+import com.google.gson.annotations.Expose;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,9 +16,11 @@ public class Phone {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Expose
     private long id;
 
     @Column(name = "number")
+    @Expose
     private String number;
 
     @EqualsAndHashCode.Exclude
