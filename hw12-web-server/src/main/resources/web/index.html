@@ -12,14 +12,17 @@
         <input type="text" v-model="newUser.name" placeholder="Имя"/><br>
         <input type="number" v-model="newUser.age" placeholder="Возраст"><br>
         <input type="text" v-model="newUser.address.street" placeholder="Адрес"><br>
-        <input type="number" v-model="newUser.phone" placeholder="Телефоны"><br>
+        <div v-for="phone in newUser.phones">
+            <input type="number" v-model="phone.number" placeholder="Телефон"><br>
+        </div>
+
         <button v-on:click="saveUser">Сохранить пользователя</button>
     </div>
     <table>
         <p>Список пользователей</p>
         <tr v-for="user in users">
             <td>{{ user.name }}</td>
-            <td>{{ user.phone }}</td>
+            <td>{{ user.phones }}</td>
         </tr>
     </table>
     <button v-on:click="loadData">Загрузить данные</button>
@@ -30,11 +33,13 @@
         data: {
             newUser: {
                 name: "",
-                age: {
+                age: 0,
+                address: {
                     street: ""
                 },
-                address: "",
-                phone: "",
+                phones: [
+                    {number: ""}
+                ],
             },
             users: []
         },
@@ -57,7 +62,7 @@
                     body: JSON.stringify(this.newUser)
                 })
                     .then(resp => {
-                        if (resp.status === 201) {
+                        if (resp.status === 200) {
                             this.loadData();
                             alert("Created")
                         } else {
