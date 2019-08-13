@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MyWebApp</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <div style="border: red 2px">
+        <p>Новый пользователь</p>
+        <input type="text" v-model="newUser.name" placeholder="Имя"/><br>
+        <input type="number" v-model="newUser.age" placeholder="Возраст"><br>
+        <input type="text" v-model="newUser.address.street" placeholder="Адрес"><br>
+        <input type="number" v-model="newUser.phone" placeholder="Телефоны"><br>
+        <button v-on:click="saveUser">Сохранить пользователя</button>
+    </div>
+    <table>
+        <p>Список пользователей</p>
+        <tr v-for="user in users">
+            <td>{{ user.name }}</td>
+            <td>{{ user.phone }}</td>
+        </tr>
+    </table>
+    <button v-on:click="loadData">Загрузить данные</button>
+</div>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            newUser: {
+                name: "",
+                age: {
+                    street: ""
+                },
+                address: "",
+                phone: "",
+            },
+            users: []
+        },
+        methods: {
+            loadData() {
+                fetch("/users")
+                    .then(resp => {
+                        return resp.json()
+                    })
+                    .then(json => {
+                        this.users = json;
+                    })
+            },
+            saveUser() {
+                fetch("/users", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.newUser)
+                })
+                    .then(resp => {
+                        if (resp.status === 201) {
+                            this.loadData();
+                            alert("Created")
+                        } else {
+                            alert("Error " + resp.status)
+                        }
+                    })
+            }
+        },
+        beforeMount() {
+            this.loadData()
+        },
+    })
+</script>
+
+</body>
+</html>
