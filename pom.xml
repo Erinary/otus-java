@@ -18,6 +18,7 @@
         <module>hw08-serializer</module>
         <module>hw09-diy-orm</module>
         <module>hw10-hibernate</module>
+        <module>hw13-spring</module>
     </modules>
 
     <properties>
@@ -60,6 +61,11 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>5.4.2.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.2.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
