@@ -1,5 +1,6 @@
 package ru.otus.erinary.model;
 
+import com.google.gson.annotations.Expose;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,20 +20,25 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Expose
     private long id;
 
     @Column(name = "name")
+    @Expose
     private String name;
 
     @Column(name = "age")
+    @Expose
     private int age;
 
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @Expose
     private Address address;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Setter(AccessLevel.NONE)
+    @Expose
     private Set<Phone> phones;
 
     public User(String name, int age, Address address, Set<Phone> phones) {
@@ -48,5 +54,11 @@ public class User {
     public void addPhone(Phone phone) {
         phones.add(phone);
         phone.setUser(this);
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void ensurePhonesUser() {
+        phones.forEach(phone -> phone.setUser(this));
     }
 }
