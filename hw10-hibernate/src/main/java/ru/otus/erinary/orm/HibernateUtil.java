@@ -5,9 +5,9 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-class HibernateUtil {
+public class HibernateUtil {
 
-    static SessionFactory getSessionFactory(String url) {
+    public static SessionFactory getSessionFactory(String url) {
         StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .configure("hibernate.cfg.xml")
                 .applySetting("hibernate.connection.url", url)
