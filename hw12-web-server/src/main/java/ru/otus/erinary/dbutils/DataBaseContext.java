@@ -8,13 +8,13 @@ import ru.otus.erinary.orm.HibernateUtil;
 import java.sql.SQLException;
 
 @Data
-public class DataBaseUtils {
+public class DataBaseContext {
 
     private static final String DB_URL = "jdbc:h2:mem:users_db";
     private H2DataBase dataBase;
     private SessionFactory sessionFactory;
 
-    public DataBaseUtils() throws SQLException {
+    public DataBaseContext() throws SQLException {
         this.dataBase = new H2DataBase(DB_URL);
         this.sessionFactory = HibernateUtil.getSessionFactory(DB_URL);
     }
