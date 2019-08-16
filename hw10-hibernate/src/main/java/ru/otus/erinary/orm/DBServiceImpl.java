@@ -4,6 +4,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
+
 public class DBServiceImpl<T> implements DBService<T> {
 
     private final SessionFactory sessionFactory;
@@ -39,6 +45,33 @@ public class DBServiceImpl<T> implements DBService<T> {
         try {
             session.beginTransaction();
             result = session.get(entityType, id);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            if (session.getTransaction().getStatus() == TransactionStatus.ACTIVE ||
+                    session.getTransaction().getStatus() == TransactionStatus.MARKED_ROLLBACK) {
+                session.getTransaction().rollback();
+                throw e;
+            }
+        } finally {
+            session.close();
+        }
+        return result;
+    }
+
+    @Override
+    public List<T> loadAll() {
+        Session session = sessionFactory.openSession();
+        List<T> result = null;
+        try {
+            session.beginTransaction();
+
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<T> query = criteriaBuilder.createQuery(entityType);
+            Root<T> root = query.from(entityType);
+            CriteriaQuery<T> all = query.select(root);
+            TypedQuery<T> allQuery = session.createQuery(all);
+            result = allQuery.getResultList();
+
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session.getTransaction().getStatus() == TransactionStatus.ACTIVE ||
