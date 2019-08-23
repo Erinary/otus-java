@@ -2,12 +2,10 @@ var app = new Vue({
     el: '#app',
     data: {
         newUser: {
-            name: "",
-            age: 0,
-            address: {
-                street: ""
-            },
-            phones: [
+            userName: "",
+            userAge: 0,
+            userAddress: "",
+            userPhones: [
                 {number: ""}
             ],
         },
@@ -15,7 +13,7 @@ var app = new Vue({
     },
     methods: {
         loadData() {
-            fetch("/users")
+            fetch("users")
                 .then(resp => {
                     return resp.json();
                 })
@@ -24,12 +22,19 @@ var app = new Vue({
                 });
         },
         saveUser() {
-            fetch("/users", {
+            fetch("users", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(this.newUser)
+                body: JSON.stringify(
+                    {
+                        userName: this.newUser.userName,
+                        userAge: this.newUser.userAge,
+                        userAddress: this.newUser.userAddress,
+                        userPhones: this.newUser.userPhones.map(p => p.number)
+                    }
+                )
             })
                 .then(resp => {
                     if (resp.status === 200) {

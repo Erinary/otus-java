@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hw13-spring</artifactId>
+    <packaging>war</packaging>
 
     <properties>
         <spring.version>5.1.5.RELEASE</spring.version>
@@ -55,10 +56,15 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.9</version>
+        </dependency>
     </dependencies>
 
     <build>
-        <finalName>${name}</finalName>
+        <finalName>SpringWebServer</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
