@@ -1,7 +1,11 @@
 package ru.otus.erinary.spring.controllers;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import ru.otus.erinary.model.User;
 import ru.otus.erinary.orm.DBService;
 import ru.otus.erinary.spring.model.ApiUser;
@@ -11,16 +15,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    private DBService<User> userDBService;
+    private final DBService<User> userDBService;
 
-    public UserController(DBService<User> userDBService) {
-        this.userDBService = userDBService;
-    }
-
-    @PostMapping
+    @PostMapping("/users")
     public void createUser(@RequestBody ApiUser apiUser) {
         try {
             log.info("Got request for user creating. New user: {}", apiUser);
@@ -31,7 +31,7 @@ public class UserController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/users")
     public List<ApiUser> getUsers() {
         List<ApiUser> result;
         try {

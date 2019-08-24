@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -31,22 +30,17 @@ import java.util.List;
 @PropertySource("classpath:application.properties")
 public class WebConfig implements WebMvcConfigurer {
 
-    private static final String DATASOURCE_PROPERTY_NAME = "datasource.url";
-
-    private Environment env;
-
-    public WebConfig(Environment env) {
-        this.env = env;
-    }
+    @Value("${datasource.url}")
+    private String databaseUrl;
 
     @Bean
     public SessionFactory sessionFactory() {
-        return HibernateUtil.getSessionFactory(env.getProperty(DATASOURCE_PROPERTY_NAME));
+        return HibernateUtil.getSessionFactory(databaseUrl);
     }
 
     @Bean
     public H2DataBase h2DataBase() throws SQLException {
-        return new H2DataBase(env.getProperty(DATASOURCE_PROPERTY_NAME));
+        return new H2DataBase(databaseUrl);
     }
 
     @Bean
