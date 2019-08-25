@@ -20,12 +20,14 @@
         <module>hw10-hibernate</module>
         <module>hw12-web-server</module>
         <module>hw13-spring</module>
+        <module>hw15-message-system</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <spring.version>5.1.5.RELEASE</spring.version>
     </properties>
 
     <dependencyManagement>
