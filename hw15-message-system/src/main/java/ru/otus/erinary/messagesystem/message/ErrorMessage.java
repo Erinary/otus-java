@@ -1,15 +1,14 @@
 package ru.otus.erinary.messagesystem.message;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@Builder
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class CreateUserResponse extends Message {
+public class ErrorMessage extends Message {
 
-    private String status;
-    private String response;
+    private String message;
 
 }

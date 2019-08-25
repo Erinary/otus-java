@@ -15,6 +15,7 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import ru.otus.erinary.h2.H2DataBase;
 import ru.otus.erinary.messagesystem.controller.SocketHandler;
+import ru.otus.erinary.messagesystem.service.DataBaseWorker;
 import ru.otus.erinary.messagesystem.service.LocalMessageSystemClient;
 import ru.otus.erinary.messagesystem.service.MessageSystemBroker;
 import ru.otus.erinary.model.User;
@@ -32,6 +33,8 @@ import java.util.List;
 @EnableWebSocket
 @PropertySource("classpath:application.properties")
 public class WebConfig implements WebMvcConfigurer, WebSocketConfigurer {
+
+    //TODO добавить в проперти имена очередей и вместимость
 
     @Value("${datasource.url}")
     private String databaseUrl;
@@ -91,5 +94,10 @@ public class WebConfig implements WebMvcConfigurer, WebSocketConfigurer {
     @Bean
     public WebSocketHandler socketHandler() {
         return new SocketHandler(new LocalMessageSystemClient(messageSystemService()), objectMapper());
+    }
+
+    @Bean
+    public DataBaseWorker dataBaseWorker() {
+        return new DataBaseWorker(userDBService(), new LocalMessageSystemClient(messageSystemService()));
     }
 }

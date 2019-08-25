@@ -13,13 +13,13 @@ var app = new Vue({
     },
     methods: {
         loadData() {
-            fetch("users")
-                .then(resp => {
-                    return resp.json();
-                })
-                .then(json => {
-                    this.users = json;
-                });
+            window.ws.send(
+                JSON.stringify(
+                    {
+                        type: "loadUsersRequest",
+                    }
+                )
+            )
         },
         saveUser() {
             window.ws.send(
@@ -38,8 +38,8 @@ var app = new Vue({
         }
     },
     beforeMount() {
-        // this.loadData();
         window.ws = new WebSocket(`ws://${window.location.host}${window.location.pathname}/ws`);
+        //TODO обработка ответов от бэка
         window.ws.onmessage = (msg) => {
             console.info("Message from WebSocket: ", msg.data)
         }
