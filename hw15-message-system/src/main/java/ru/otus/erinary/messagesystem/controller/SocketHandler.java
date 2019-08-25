@@ -32,7 +32,7 @@ public class SocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         try {
             Message request = objectMapper.readValue(message.getPayload(), Message.class);
-            log.info("Got message from client: {}", message);
+            log.info("Got message from client: {}", request);
             request.setSessionId(session.getId());
             messageService.queueMessage(request, dataBaseServiceQueueName);
         } catch (InterruptedException e) {

@@ -13,24 +13,24 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class ApiUser {
 
-    private String userName;
-    private int userAge;
-    private String userAddress;
-    private List<String> userPhones;
+    private String name;
+    private int age;
+    private String address;
+    private List<String> phones;
 
     public ApiUser(User user) {
-        this.userName = user.getName();
-        this.userAge = user.getAge();
-        this.userAddress = user.getAddress().getStreet();
-        this.userPhones = user.getPhones().stream().map(Phone::getNumber).collect(Collectors.toList());
+        this.name = user.getName();
+        this.age = user.getAge();
+        this.address = user.getAddress().getStreet();
+        this.phones = user.getPhones().stream().map(Phone::getNumber).collect(Collectors.toList());
     }
 
     public User toUser() {
         return new User(
-                userName,
-                userAge,
-                new Address(userAddress),
-                userPhones.stream().map(Phone::new).collect(Collectors.toSet())
+                name,
+                age,
+                new Address(address),
+                phones.stream().map(Phone::new).collect(Collectors.toSet())
         );
     }
 

@@ -2,10 +2,10 @@ var app = new Vue({
     el: '#app',
     data: {
         newUser: {
-            userName: "",
-            userAge: 0,
-            userAddress: "",
-            userPhones: [
+            name: "",
+            age: 0,
+            address: "",
+            phones: [
                 {number: ""}
             ],
         },
@@ -22,31 +22,19 @@ var app = new Vue({
                 });
         },
         saveUser() {
-            fetch("users", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(
+            window.ws.send(
+                JSON.stringify(
                     {
-                        userName: this.newUser.userName,
-                        userAge: this.newUser.userAge,
-                        userAddress: this.newUser.userAddress,
-                        userPhones: this.newUser.userPhones.map(p => p.number)
+                        type: "createUserRequest",
+                        data: {
+                            name: this.newUser.name,
+                            age: this.newUser.age,
+                            address: this.newUser.address,
+                            phones: this.newUser.phones.map(p => p.number)
+                        }
                     }
                 )
-            })
-                .then(resp => {
-                    if (resp.status === 200) {
-                        this.loadData();
-                        alert("Created");
-                    } else {
-                        alert("Error " + resp.status);
-                    }
-                });
-        },
-        sendToWebSocket() {
-            window.ws.send("Hello");
+            );
         }
     },
     beforeMount() {

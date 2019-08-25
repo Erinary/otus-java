@@ -9,10 +9,10 @@
 <div id="app">
     <div style="border: red 2px">
         <p>Новый пользователь</p>
-        <input type="text" v-model="newUser.userName" placeholder="Имя"/><br>
-        <input type="number" v-model="newUser.userAge" placeholder="Возраст"><br>
-        <input type="text" v-model="newUser.userAddress" placeholder="Адрес"><br>
-        <div v-for="phone in newUser.userPhones">
+        <input type="text" v-model="newUser.name" placeholder="Имя"/><br>
+        <input type="number" v-model="newUser.age" placeholder="Возраст"><br>
+        <input type="text" v-model="newUser.address" placeholder="Адрес"><br>
+        <div v-for="phone in newUser.phones">
             <input type="text" v-model="phone.number" placeholder="Телефон"><br>
         </div>
 
@@ -25,8 +25,7 @@
             <td>{{ user.userPhones }}</td>
         </tr>
     </table>
-<!--    <button v-on:click="loadData">Загрузить данные</button>-->
-    <button v-on:click="sendToWebSocket">Загрузить данные</button>
+    <button v-on:click="loadData">Загрузить данные</button>
 </div>
 <script src="script.js"></script>
 
