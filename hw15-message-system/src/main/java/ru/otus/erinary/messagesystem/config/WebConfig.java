@@ -34,10 +34,12 @@ import java.util.List;
 @PropertySource("classpath:application.properties")
 public class WebConfig implements WebMvcConfigurer, WebSocketConfigurer {
 
-    //TODO добавить в проперти имена очередей и вместимость
-
     @Value("${datasource.url}")
     private String databaseUrl;
+    @Value("${queue.frontend}")
+    private String frontendQueueName;
+    @Value("${queue.database}")
+    private String dataBaseServiceQueueName;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -88,16 +90,26 @@ public class WebConfig implements WebMvcConfigurer, WebSocketConfigurer {
 
     @Bean
     public MessageSystemBroker messageSystemService() {
-        return new MessageSystemBroker(List.of("TO_DBSERVICE", "TO_FRONTEND"), 100);
+        return new MessageSystemBroker(List.of(frontendQueueName, dataBaseServiceQueueName), 100);
     }
 
     @Bean
     public WebSocketHandler socketHandler() {
-        return new SocketHandler(new LocalMessageSystemClient(messageSystemService()), objectMapper());
+        return SocketHandler.builder()
+                .messageService(new LocalMessageSystemClient(messageSystemService()))
+                .objectMapper(objectMapper())
+                .dataBaseServiceQueueName(dataBaseServiceQueueName)
+                .frontendQueueName(frontendQueueName)
+                .build();
     }
 
     @Bean
     public DataBaseWorker dataBaseWorker() {
-        return new DataBaseWorker(userDBService(), new LocalMessageSystemClient(messageSystemService()));
+        return DataBaseWorker.builder()
+                .messageService(new LocalMessageSystemClient(messageSystemService()))
+                .dbService(userDBService())
+                .dataBaseServiceQueueName(dataBaseServiceQueueName)
+                .frontendQueueName(frontendQueueName)
+                .build();
     }
 }

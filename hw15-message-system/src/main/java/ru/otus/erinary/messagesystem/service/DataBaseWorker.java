@@ -1,6 +1,6 @@
 package ru.otus.erinary.messagesystem.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.otus.erinary.messagesystem.message.*;
@@ -14,15 +14,23 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class DataBaseWorker {
 
-    private final String dataBaseServiceQueueName = "TO_DBSERVICE";
-    private final String frontendQueueName = "TO_FRONTEND";
+    private final String dataBaseServiceQueueName;
+    private final String frontendQueueName;
 
     private final DBService<User> dbService;
     private final MessageSystemClient messageService;
     private MessageHandlerThread messageHandler;
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Builder
+    public DataBaseWorker(String dataBaseServiceQueueName, String frontendQueueName, DBService<User> dbService, MessageSystemClient messageService) {
+        this.dataBaseServiceQueueName = dataBaseServiceQueueName;
+        this.frontendQueueName = frontendQueueName;
+        this.dbService = dbService;
+        this.messageService = messageService;
+    }
 
     private Message handleMessage(Message request) {
         log.info("Starting to handle message for DataBaseWorker");

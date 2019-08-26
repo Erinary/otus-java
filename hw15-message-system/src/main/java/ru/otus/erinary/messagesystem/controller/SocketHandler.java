@@ -1,7 +1,7 @@
 package ru.otus.erinary.messagesystem.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -17,16 +17,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class SocketHandler extends TextWebSocketHandler {
 
-    private final String dataBaseServiceQueueName = "TO_DBSERVICE";
-    private final String frontendQueueName = "TO_FRONTEND";
+    private final String dataBaseServiceQueueName;
+    private final String frontendQueueName;
 
     private final MessageSystemClient messageService;
     private final ObjectMapper objectMapper;
     private MessageDeliveryThread deliveryThread;
     private ConcurrentHashMap<String, WebSocketSession> webSocketMap = new ConcurrentHashMap<>();
+
+    @Builder
+    public SocketHandler(String dataBaseServiceQueueName, String frontendQueueName, MessageSystemClient messageService, ObjectMapper objectMapper) {
+        this.dataBaseServiceQueueName = dataBaseServiceQueueName;
+        this.frontendQueueName = frontendQueueName;
+        this.messageService = messageService;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
