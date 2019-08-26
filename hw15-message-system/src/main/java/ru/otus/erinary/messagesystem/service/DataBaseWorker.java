@@ -52,7 +52,7 @@ public class DataBaseWorker {
         dbService.create(((CreateUserRequest) request).getData().toUser());
         return CreateUserResponse.builder()
                 .status("OK")
-                .response("User created")
+                .message("User created")
                 .build();
     }
 

@@ -12,7 +12,8 @@ import lombok.Data;
         @JsonSubTypes.Type(value = CreateUserRequest.class, name = "createUserRequest"),
         @JsonSubTypes.Type(value = CreateUserResponse.class, name = "createUserResponse"),
         @JsonSubTypes.Type(value = LoadUsersRequest.class, name = "loadUsersRequest"),
-        @JsonSubTypes.Type(value = LoadUsersResponse.class, name = "loadUsersResponse")
+        @JsonSubTypes.Type(value = LoadUsersResponse.class, name = "loadUsersResponse"),
+        @JsonSubTypes.Type(value = ErrorMessage.class, name = "errorResponse")
 })
 @Data
 public abstract class Message {

@@ -21,8 +21,8 @@
     <table>
         <p>Список пользователей</p>
         <tr v-for="user in users">
-            <td>{{ user.userName }}</td>
-            <td>{{ user.userPhones }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.phones }}</td>
         </tr>
     </table>
     <button v-on:click="loadData">Загрузить данные</button>

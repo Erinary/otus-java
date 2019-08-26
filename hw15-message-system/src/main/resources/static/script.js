@@ -35,13 +35,21 @@ var app = new Vue({
                     }
                 )
             );
+        },
+        storeLoadedUsers(response) {
+            this.users = response.users;
         }
     },
     beforeMount() {
         window.ws = new WebSocket(`ws://${window.location.host}${window.location.pathname}/ws`);
-        //TODO обработка ответов от бэка
         window.ws.onmessage = (msg) => {
-            console.info("Message from WebSocket: ", msg.data)
+            console.info("Message from WebSocket: ", msg.data);
+            const response = JSON.parse(msg.data);
+            if (response.type === "loadUsersResponse") {
+                this.storeLoadedUsers(response);
+            } else {
+                alert(response.message)
+            }
         }
     },
 });

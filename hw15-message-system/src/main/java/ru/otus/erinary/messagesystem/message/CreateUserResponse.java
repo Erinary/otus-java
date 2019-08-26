@@ -10,6 +10,6 @@ import lombok.EqualsAndHashCode;
 public class CreateUserResponse extends Message {
 
     private String status;
-    private String response;
+    private String message;
 
 }
