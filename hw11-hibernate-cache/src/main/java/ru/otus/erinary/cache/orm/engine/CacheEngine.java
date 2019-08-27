@@ -12,4 +12,6 @@ public interface CacheEngine<K, V> {
 
     int getCacheSize();
 
+    void cleanup();
+
 }

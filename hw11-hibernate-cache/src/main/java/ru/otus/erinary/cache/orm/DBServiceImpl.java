@@ -20,10 +20,10 @@ public class DBServiceImpl<T> implements DBService<T> {
     private final SessionFactory sessionFactory;
     private final Class<T> entityType;
 
-    public DBServiceImpl(SessionFactory sessionFactory, Class<T> entityType) {
+    public DBServiceImpl(SessionFactory sessionFactory, Class<T> entityType, int cacheCleanupPeriod) {
         this.sessionFactory = sessionFactory;
         this.entityType = entityType;
-        this.cache = new CacheEngineImpl<>();
+        this.cache = new CacheEngineImpl<>(cacheCleanupPeriod);
     }
 
     @Override

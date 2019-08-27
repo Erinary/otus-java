@@ -30,11 +30,12 @@ class UserDBServiceTest {
     void setup() throws SQLException {
         dataBase = new H2DataBase(DB_URL);
         sessionFactory = HibernateUtil.getSessionFactory(DB_URL);
-        userDBService = new DBServiceImpl<>(sessionFactory, User.class);
+        userDBService = new DBServiceImpl<>(sessionFactory, User.class, 5000);
     }
 
     @AfterEach
     void cleanup() throws SQLException {
+        userDBService.getCache().cleanup();
         sessionFactory.close();
         dataBase.close();
     }
