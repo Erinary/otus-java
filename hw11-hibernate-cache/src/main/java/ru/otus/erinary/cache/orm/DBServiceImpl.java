@@ -16,14 +16,14 @@ import java.util.List;
 
 public class DBServiceImpl<T> implements DBService<T> {
 
+    private final CacheEngine<Long, T> cache;
     private final SessionFactory sessionFactory;
     private final Class<T> entityType;
-    private final CacheEngine<Long, T> cache;
 
-    public DBServiceImpl(SessionFactory sessionFactory, Class<T> entityType, int maxCacheElements) {
+    public DBServiceImpl(SessionFactory sessionFactory, Class<T> entityType) {
         this.sessionFactory = sessionFactory;
         this.entityType = entityType;
-        this.cache = new CacheEngineImpl<>(maxCacheElements);
+        this.cache = new CacheEngineImpl<>();
     }
 
     @Override
@@ -95,6 +95,11 @@ public class DBServiceImpl<T> implements DBService<T> {
             session.close();
         }
         return result;
+    }
+
+    @Override
+    public CacheEngine getCache() {
+        return cache;
     }
 
     private void putInCache(T objectData) {

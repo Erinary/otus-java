@@ -10,4 +10,6 @@ public interface CacheEngine<K, V> {
 
     int getMissCount();
 
+    int getCacheSize();
+
 }

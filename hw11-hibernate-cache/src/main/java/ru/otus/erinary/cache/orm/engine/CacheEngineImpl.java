@@ -1,39 +1,40 @@
 package ru.otus.erinary.cache.orm.engine;
 
+import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
 
-    private final int maxElements;
     private int hit = 0;
     private int miss = 0;
 
     private Map<K, SoftReference<V>> cache;
-    //TODO доделать работу с очередью
     private ReferenceQueue<V> queue;
 
-    public CacheEngineImpl(int maxElements) {
-        this.maxElements = maxElements;
+    private static final long TASK_PERIOD = 10000;
+    private Timer timer = new Timer();
+
+    public CacheEngineImpl() {
         this.cache = new HashMap<>();
         this.queue = new ReferenceQueue<>();
+        timer.schedule(getCleaningTask(), 0, TASK_PERIOD);
     }
 
     @Override
     public void put(K key, V value) {
-        if (cache.size() == maxElements) {
-            cache.remove(cache.keySet().iterator().next());
-        }
         cache.put(key, new SoftReference<>(value, queue));
     }
 
     @Override
     public V get(K key) {
-        V element = cache.get(key).get();
-        if (element != null) {
-            hit++;
+        V element = null;
+        if (cache.get(key) != null) {
+            element = cache.get(key).get();
+            if (element != null) {
+                hit++;
+            }
         } else {
             miss++;
         }
@@ -50,4 +51,31 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
         return miss;
     }
 
+    @Override
+    public int getCacheSize() {
+        return cache.size();
+    }
+
+    private TimerTask getCleaningTask() {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                List<Reference> referencesToRemove = new ArrayList<>();
+                Reference reference;
+                while ((reference = queue.poll()) != null) {
+                    referencesToRemove.add(reference);
+                }
+                if (!referencesToRemove.isEmpty()) {
+                    for (Reference ref : referencesToRemove) {
+                        cache.entrySet().removeIf(entry -> entry.getValue().equals(ref));
+                    }
+                    referencesToRemove.clear();
+                }
+            }
+        };
+    }
+
+    public void cleanup() {
+        timer.cancel();
+    }
 }
