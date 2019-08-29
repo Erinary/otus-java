@@ -4,7 +4,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import ru.otus.erinary.cache.orm.engine.CacheEngine;
-import ru.otus.erinary.cache.orm.engine.CacheEngineImpl;
 
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
@@ -20,10 +19,10 @@ public class DBServiceImpl<T> implements DBService<T> {
     private final SessionFactory sessionFactory;
     private final Class<T> entityType;
 
-    public DBServiceImpl(SessionFactory sessionFactory, Class<T> entityType) {
+    public DBServiceImpl(SessionFactory sessionFactory, Class<T> entityType, CacheEngine<Long, T> cache) {
         this.sessionFactory = sessionFactory;
         this.entityType = entityType;
-        this.cache = new CacheEngineImpl<>();
+        this.cache = cache;
     }
 
     @Override
@@ -33,7 +32,6 @@ public class DBServiceImpl<T> implements DBService<T> {
             session.beginTransaction();
             session.save(objectData);
             session.getTransaction().commit();
-            putInCache(objectData);
         } catch (Exception e) {
             if (session.getTransaction().getStatus() == TransactionStatus.ACTIVE ||
                     session.getTransaction().getStatus() == TransactionStatus.MARKED_ROLLBACK) {
@@ -102,22 +100,4 @@ public class DBServiceImpl<T> implements DBService<T> {
         return cache;
     }
 
-    private void putInCache(T objectData) {
-        Class tClass = objectData.getClass();
-        Field idField;
-        for (Field field : tClass.getDeclaredFields()) {
-            if (field.isAnnotationPresent(Id.class)) {
-                idField = field;
-                try {
-                    idField.setAccessible(true);
-                    long id = (long) idField.get(objectData);
-                    cache.put(id, objectData);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } finally {
-                    idField.setAccessible(false);
-                }
-            }
-        }
-    }
 }

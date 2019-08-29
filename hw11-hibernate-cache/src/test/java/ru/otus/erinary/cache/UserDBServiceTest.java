@@ -12,6 +12,7 @@ import ru.otus.erinary.cache.model.User;
 import ru.otus.erinary.cache.orm.DBService;
 import ru.otus.erinary.cache.orm.DBServiceImpl;
 import ru.otus.erinary.cache.orm.HibernateUtil;
+import ru.otus.erinary.cache.orm.engine.CacheEngineImpl;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -30,7 +31,7 @@ class UserDBServiceTest {
     void setup() throws SQLException {
         dataBase = new H2DataBase(DB_URL);
         sessionFactory = HibernateUtil.getSessionFactory(DB_URL);
-        userDBService = new DBServiceImpl<>(sessionFactory, User.class);
+        userDBService = new DBServiceImpl<>(sessionFactory, User.class, new CacheEngineImpl<>());
     }
 
     @AfterEach
@@ -75,7 +76,7 @@ class UserDBServiceTest {
         dataBase.selectPhoneByUserId(janeDoe.getId()).forEach(dataInBase::addPhone);
 
         assertEquals(dataInBase, janeDoe);
-        assertEquals(1, userDBService.getCache().getCacheSize());
+        assertEquals(0, userDBService.getCache().getCacheSize());
     }
 
     @Test
