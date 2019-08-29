@@ -5,12 +5,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import ru.otus.erinary.cache.orm.engine.CacheEngine;
 
-import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class DBServiceImpl<T> implements DBService<T> {

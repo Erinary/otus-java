@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserDBServiceTest {
     private static final String DB_URL = "jdbc:h2:mem:users_db";
+    private static final long CLEANUP_PERIOD = 5000;
 
     private H2DataBase dataBase;
     private SessionFactory sessionFactory;
@@ -31,11 +32,12 @@ class UserDBServiceTest {
     void setup() throws SQLException {
         dataBase = new H2DataBase(DB_URL);
         sessionFactory = HibernateUtil.getSessionFactory(DB_URL);
-        userDBService = new DBServiceImpl<>(sessionFactory, User.class, new CacheEngineImpl<>());
+        userDBService = new DBServiceImpl<>(sessionFactory, User.class, new CacheEngineImpl<>(CLEANUP_PERIOD));
     }
 
     @AfterEach
     void cleanup() throws SQLException {
+        userDBService.getCache().cleanup();
         sessionFactory.close();
         dataBase.close();
     }

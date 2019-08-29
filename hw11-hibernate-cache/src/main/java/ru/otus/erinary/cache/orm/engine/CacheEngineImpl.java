@@ -10,17 +10,15 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
     private int hit = 0;
     private int miss = 0;
 
-    private Map<K, SoftReference<V>> cache;
     private final ReferenceQueue<V> queue;
-
-    private static final long TASK_PERIOD = 10000;
+    private Map<K, SoftReference<V>> cache;
     private Timer timer;
 
-    public CacheEngineImpl() {
+    public CacheEngineImpl(long cleanupPeriod) {
         this.cache = new HashMap<>();
         this.queue = new ReferenceQueue<>();
         this.timer = new Timer();
-        timer.schedule(getCleaningTask(), 0, TASK_PERIOD);
+        timer.schedule(getCleaningTask(), 0, cleanupPeriod);
     }
 
     @Override
@@ -58,6 +56,7 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
         return new TimerTask() {
             @Override
             public void run() {
+                System.out.println("Started to clean up cache");
                 List<Reference> referencesToRemove = new ArrayList<>();
                 Reference reference;
                 while ((reference = queue.poll()) != null) {
@@ -73,6 +72,7 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
         };
     }
 
+    @Override
     public void cleanup() {
         timer.cancel();
     }
