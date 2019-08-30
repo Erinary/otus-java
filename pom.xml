@@ -19,6 +19,7 @@
         <module>hw08-serializer</module>
         <module>hw09-diy-orm</module>
         <module>hw10-hibernate</module>
+        <module>hw11-hibernate-cache</module>
         <module>hw12-web-server</module>
         <module>hw13-spring</module>
     </modules>
