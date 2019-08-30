@@ -12,7 +12,7 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
 
     private final ReferenceQueue<V> queue;
     private Map<K, SoftReference<V>> cache;
-    private Timer timer;
+    private final Timer timer;
 
     public CacheEngineImpl(long cleanupPeriod) {
         this.cache = new HashMap<>();
@@ -28,13 +28,15 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
 
     @Override
     public V get(K key) {
-        Optional<SoftReference<V>> optionalRef = Optional.ofNullable(cache.get(key));
-        if (optionalRef.isPresent()) {
-            hit++;
-        } else {
-            miss++;
-        }
-        return optionalRef.map(SoftReference::get).orElse(null);
+        return Optional.ofNullable(cache.get(key)).map(SoftReference::get)
+                .map(element -> {
+                    hit++;
+                    return element;
+                })
+                .orElseGet(() -> {
+                    miss++;
+                    return null;
+                });
     }
 
     @Override
