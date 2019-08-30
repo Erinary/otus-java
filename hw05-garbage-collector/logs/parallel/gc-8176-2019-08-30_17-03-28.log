@@ -1,0 +1,59 @@
+[2019-08-30T17:03:28.348+0300][0.021s][info][gc] Using Parallel
+[2019-08-30T17:08:57.820+0300][329.491s][info][gc] GC(0) Pause Young (Allocation Failure) 1024M->767M(3925M) 204.290ms
+[2019-08-30T17:11:41.519+0300][493.189s][info][gc] GC(1) Pause Young (Allocation Failure) 1791M->1725M(3925M) 285.664ms
+[2019-08-30T17:13:46.773+0300][618.441s][info][gc] GC(2) Pause Young (Allocation Failure) 2749M->2712M(3925M) 402.000ms
+[2019-08-30T17:13:47.084+0300][618.753s][info][gc] GC(3) Pause Full (Ergonomics) 2712M->2693M(3925M) 311.786ms
+[2019-08-30T17:15:32.751+0300][724.419s][info][gc] GC(4) Pause Full (Ergonomics) 3717M->3685M(3925M) 454.910ms
+[2019-08-30T17:15:39.610+0300][731.277s][info][gc] GC(5) Pause Full (Ergonomics) 3754M->3749M(3925M) 432.856ms
+[2019-08-30T17:15:39.630+0300][731.297s][info][gc] GC(6) Pause Full (Ergonomics) 3754M->3751M(3925M) 19.466ms
+[2019-08-30T17:15:39.649+0300][731.316s][info][gc] GC(7) Pause Full (Ergonomics) 3754M->3751M(3925M) 18.844ms
+[2019-08-30T17:15:40.147+0300][731.814s][info][gc] GC(8) Pause Full (Ergonomics) 3754M->3753M(3925M) 297.312ms
+[2019-08-30T17:15:40.523+0300][732.190s][info][gc] GC(9) Pause Full (Ergonomics) 3754M->3753M(3925M) 295.421ms
+[2019-08-30T17:15:40.543+0300][732.211s][info][gc] GC(10) Pause Full (Ergonomics) 3754M->3754M(3925M) 19.969ms
+[2019-08-30T17:15:40.562+0300][732.230s][info][gc] GC(11) Pause Full (Ergonomics) 3754M->3754M(3925M) 18.943ms
+[2019-08-30T17:15:40.582+0300][732.249s][info][gc] GC(12) Pause Full (Ergonomics) 3754M->3754M(3925M) 19.353ms
+[2019-08-30T17:15:40.601+0300][732.269s][info][gc] GC(13) Pause Full (Ergonomics) 3754M->3754M(3925M) 19.137ms
+[2019-08-30T17:15:40.621+0300][732.288s][info][gc] GC(14) Pause Full (Ergonomics) 3754M->3754M(3925M) 19.382ms
+[2019-08-30T17:15:40.640+0300][732.308s][info][gc] GC(15) Pause Full (Ergonomics) 3754M->3754M(3925M) 19.009ms
+[2019-08-30T17:15:40.691+0300][732.358s][info][gc] GC(16) Pause Full (Allocation Failure) 3754M->3754M(3925M) 50.195ms
+[2019-08-30T17:15:45.906+0300][737.573s][info][gc] GC(17) Pause Full (Ergonomics) 3754M->3754M(3925M) 52.209ms
+[2019-08-30T17:15:45.926+0300][737.594s][info][gc] GC(18) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.300ms
+[2019-08-30T17:15:45.947+0300][737.615s][info][gc] GC(19) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.789ms
+[2019-08-30T17:15:45.968+0300][737.635s][info][gc] GC(20) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.250ms
+[2019-08-30T17:15:45.991+0300][737.659s][info][gc] GC(21) Pause Full (Ergonomics) 3754M->3754M(3925M) 23.041ms
+[2019-08-30T17:15:46.013+0300][737.680s][info][gc] GC(22) Pause Full (Ergonomics) 3754M->3754M(3925M) 21.627ms
+[2019-08-30T17:15:46.033+0300][737.701s][info][gc] GC(23) Pause Full (Ergonomics) 3754M->3754M(3925M) 19.943ms
+[2019-08-30T17:15:46.053+0300][737.721s][info][gc] GC(24) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.132ms
+[2019-08-30T17:15:46.076+0300][737.744s][info][gc] GC(25) Pause Full (Ergonomics) 3754M->3754M(3925M) 22.786ms
+[2019-08-30T17:15:46.097+0300][737.765s][info][gc] GC(26) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.870ms
+[2019-08-30T17:15:46.140+0300][737.808s][info][gc] GC(27) Pause Full (Ergonomics) 3754M->3754M(3925M) 41.447ms
+[2019-08-30T17:15:46.167+0300][737.834s][info][gc] GC(28) Pause Full (Ergonomics) 3754M->3754M(3925M) 23.493ms
+[2019-08-30T17:15:46.219+0300][737.887s][info][gc] GC(29) Pause Full (Ergonomics) 3754M->3754M(3925M) 52.329ms
+[2019-08-30T17:15:46.241+0300][737.909s][info][gc] GC(30) Pause Full (Ergonomics) 3754M->3754M(3925M) 21.520ms
+[2019-08-30T17:15:46.263+0300][737.931s][info][gc] GC(31) Pause Full (Ergonomics) 3754M->3754M(3925M) 21.874ms
+[2019-08-30T17:15:46.286+0300][737.954s][info][gc] GC(32) Pause Full (Ergonomics) 3754M->3754M(3925M) 22.732ms
+[2019-08-30T17:15:46.308+0300][737.976s][info][gc] GC(33) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.734ms
+[2019-08-30T17:15:46.353+0300][738.021s][info][gc] GC(34) Pause Full (Ergonomics) 3754M->3754M(3925M) 45.330ms
+[2019-08-30T17:15:46.396+0300][738.064s][info][gc] GC(35) Pause Full (Ergonomics) 3754M->3754M(3925M) 42.636ms
+[2019-08-30T17:15:46.418+0300][738.086s][info][gc] GC(36) Pause Full (Ergonomics) 3754M->3754M(3925M) 21.686ms
+[2019-08-30T17:15:46.484+0300][738.151s][info][gc] GC(37) Pause Full (Ergonomics) 3754M->3754M(3925M) 64.996ms
+[2019-08-30T17:15:46.531+0300][738.199s][info][gc] GC(38) Pause Full (Ergonomics) 3754M->3754M(3925M) 47.271ms
+[2019-08-30T17:15:46.560+0300][738.228s][info][gc] GC(39) Pause Full (Ergonomics) 3754M->3754M(3925M) 29.014ms
+[2019-08-30T17:15:46.602+0300][738.269s][info][gc] GC(40) Pause Full (Ergonomics) 3754M->3754M(3925M) 41.127ms
+[2019-08-30T17:15:46.643+0300][738.310s][info][gc] GC(41) Pause Full (Ergonomics) 3754M->3754M(3925M) 40.903ms
+[2019-08-30T17:15:46.664+0300][738.331s][info][gc] GC(42) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.501ms
+[2019-08-30T17:15:46.685+0300][738.352s][info][gc] GC(43) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.842ms
+[2019-08-30T17:15:46.705+0300][738.372s][info][gc] GC(44) Pause Full (Ergonomics) 3754M->3754M(3925M) 19.659ms
+[2019-08-30T17:15:46.727+0300][738.395s][info][gc] GC(45) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.003ms
+[2019-08-30T17:15:46.771+0300][738.439s][info][gc] GC(46) Pause Full (Ergonomics) 3754M->3754M(3925M) 43.987ms
+[2019-08-30T17:15:46.815+0300][738.483s][info][gc] GC(47) Pause Full (Ergonomics) 3754M->3754M(3925M) 43.654ms
+[2019-08-30T17:15:46.835+0300][738.503s][info][gc] GC(48) Pause Full (Ergonomics) 3754M->3754M(3925M) 19.673ms
+[2019-08-30T17:15:46.856+0300][738.523s][info][gc] GC(49) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.426ms
+[2019-08-30T17:15:46.878+0300][738.546s][info][gc] GC(50) Pause Full (Ergonomics) 3754M->3754M(3925M) 22.614ms
+[2019-08-30T17:15:46.924+0300][738.591s][info][gc] GC(51) Pause Full (Ergonomics) 3754M->3754M(3925M) 44.900ms
+[2019-08-30T17:15:46.944+0300][738.612s][info][gc] GC(52) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.061ms
+[2019-08-30T17:15:46.990+0300][738.658s][info][gc] GC(53) Pause Full (Ergonomics) 3754M->3754M(3925M) 45.820ms
+[2019-08-30T17:15:47.034+0300][738.702s][info][gc] GC(54) Pause Full (Ergonomics) 3754M->3754M(3925M) 43.678ms
+[2019-08-30T17:15:47.054+0300][738.722s][info][gc] GC(55) Pause Full (Ergonomics) 3754M->3754M(3925M) 20.099ms
+[2019-08-30T17:15:47.096+0300][738.764s][info][gc] GC(56) Pause Full (Ergonomics) 3754M->3754M(3925M) 40.771ms
+[2019-08-30T17:15:47.140+0300][738.808s][info][gc] GC(57) Pause Full (Ergonomics) 3754M->3754M(3925M) 40.365ms

@@ -28,7 +28,7 @@ public class MemoryLeak {
             longString = longString + " -very";
             if (i % 10 == 0) {
                 list.remove(0);
-                Thread.sleep(120);
+                Thread.sleep(200);
             }
             System.out.println("List size: " + list.size());
         }
