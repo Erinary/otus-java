@@ -1,23 +1,34 @@
 package ru.otus.erinary.threads;
 
-public class Main {
+import java.util.List;
 
-    private final Object monitor = new Object();
+public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         new Main().start();
     }
 
     private void start() throws InterruptedException {
-        Counter counter = new Counter(0);
-        Thread t1 = new MyThread(counter, monitor, 1);
-        Thread t2 = new MyThread(counter, monitor, 2);
+        Counter counter = new Counter();
+        List<MyThread> threadList = List.of(
+                new MyThread(counter, "thread1"),
+                new MyThread(counter, "thread2")
+        );
 
-        t1.start();
-        t2.start();
+        threadList.forEach(Thread::start);
 
-        t1.join();
-        t2.join();
+        for (int i = 0; i < 20; i++) {
+            for (MyThread t : threadList) {
+                t.getValueChangedMonitor().kick();
+                t.getValueReadDoneMonitor().waitKicked();
+            }
+            counter.tick();
+        }
+
+        threadList.forEach(Thread::interrupt);
+        for (Thread thread : threadList) {
+            thread.join();
+        }
     }
 
 }

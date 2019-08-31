@@ -2,31 +2,23 @@ package ru.otus.erinary.threads;
 
 @SuppressWarnings("WeakerAccess")
 public class Counter {
-    private int count;
-    private int step;
-    private int target;
-
-    public Counter(int count) {
-        this.count = count;
-        this.step = 1;
-        this.target = 10;
-    }
+    private int startCount = 1;
+    private int step = 1;
 
     public void tick() {
-        count += step;
+        startCount += step;
+        enforceBorderConditions();
     }
 
     public int getCount() {
-        return count;
+        return startCount;
     }
 
-    public void enforceBorderConditions() {
-        if (count == 10) {
+    private void enforceBorderConditions() {
+        if (startCount == 10) {
             step = -1;
-            target = 1;
-        } else if (count == 1) {
+        } else if (startCount == 1) {
             step = 1;
-            target = 10;
         }
     }
 }

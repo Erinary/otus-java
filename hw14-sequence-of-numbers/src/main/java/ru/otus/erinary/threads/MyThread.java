@@ -1,47 +1,34 @@
 package ru.otus.erinary.threads;
 
+import lombok.Getter;
+
 public class MyThread extends Thread {
 
+    @Getter
+    private final KickMonitor valueChangedMonitor;
+    @Getter
+    private final KickMonitor valueReadDoneMonitor;
     private Counter counter;
-    private int lastSet;
-    private int lastRead;
-    private final Object monitor;
 
     @SuppressWarnings("WeakerAccess")
-    public MyThread(Counter counter, Object monitor, int threadNumber) {
+    public MyThread(Counter counter, String name) {
+        this.valueChangedMonitor = new KickMonitor();
+        this.valueReadDoneMonitor = new KickMonitor();
         this.counter = counter;
-        this.lastSet = counter.getCount() - 1;
-        this.lastRead = counter.getCount();
-        this.monitor = monitor;
-        this.setName("Thread" + threadNumber);
+        this.setName(name);
     }
 
     @Override
     public void run() {
-        while (true) {
-            sleep();
-            synchronized (monitor) {
-                if (lastRead != counter.getCount()) {
-                    lastRead = counter.getCount();
-                    System.out.println(currentThread().getName() + ": GET " + counter.getCount());
-                }
-                if (lastSet != counter.getCount()) {
-                    counter.tick();
-                    counter.enforceBorderConditions();
-                    lastSet = counter.getCount();
-                    lastRead = counter.getCount();
-                    System.out.println(currentThread().getName() + ": SET " + counter.getCount());
-                }
-            }
-        }
-    }
-
-    private void sleep() {
         try {
-            sleep(500);
+            //noinspection InfiniteLoopStatement
+            while (true) {
+                valueChangedMonitor.waitKicked();
+                System.out.println(String.format("[%s] %d", this.getName(), counter.getCount()));
+                valueReadDoneMonitor.kick();
+            }
         } catch (InterruptedException e) {
-            currentThread().interrupt();
+            this.interrupt();
         }
     }
-
 }
