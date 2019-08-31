@@ -1,6 +1,5 @@
-package ru.otus.erinary.model;
+package ru.otus.erinary.cache.model;
 
-import com.google.gson.annotations.Expose;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,25 +19,20 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @Expose
     private long id;
 
     @Column(name = "name")
-    @Expose
     private String name;
 
     @Column(name = "age")
-    @Expose
     private int age;
 
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
-    @Expose
     private Address address;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Setter(AccessLevel.NONE)
-    @Expose
     private Set<Phone> phones;
 
     public User(String name, int age, Address address, Set<Phone> phones) {

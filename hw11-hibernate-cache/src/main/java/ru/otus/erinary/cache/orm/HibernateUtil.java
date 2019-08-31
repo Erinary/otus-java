@@ -1,4 +1,4 @@
-package ru.otus.erinary.orm;
+package ru.otus.erinary.cache.orm;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
