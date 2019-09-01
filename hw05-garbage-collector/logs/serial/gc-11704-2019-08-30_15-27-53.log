@@ -1,0 +1,17 @@
+[2019-08-30T15:27:53.898+0300][0.014s][info][gc] Using Serial
+[2019-08-30T15:31:54.442+0300][240.557s][info][gc] GC(0) Pause Young (Allocation Failure) 546M->409M(1979M) 224.252ms
+[2019-08-30T15:33:52.652+0300][358.766s][info][gc] GC(1) Pause Young (Allocation Failure) 955M->906M(1979M) 311.114ms
+[2019-08-30T15:35:24.036+0300][450.150s][info][gc] GC(3) Pause Full (Allocation Failure) 1452M->1431M(1979M) 335.005ms
+[2019-08-30T15:35:24.037+0300][450.150s][info][gc] GC(2) Pause Young (Allocation Failure) 1452M->1431M(1979M) 335.174ms
+[2019-08-30T15:36:41.011+0300][527.123s][info][gc] GC(4) Pause Full (Allocation Failure) 1979M->1965M(1979M) 114.500ms
+[2019-08-30T15:36:42.844+0300][528.956s][info][gc] GC(5) Pause Full (Allocation Failure) 1979M->1979M(1979M) 28.471ms
+[2019-08-30T15:36:43.090+0300][529.202s][info][gc] GC(6) Pause Full (Allocation Failure) 1979M->1968M(1979M) 245.349ms
+[2019-08-30T15:36:44.522+0300][530.634s][info][gc] GC(7) Pause Full (Allocation Failure) 1979M->1979M(1979M) 30.311ms
+[2019-08-30T15:36:44.544+0300][530.656s][info][gc] GC(8) Pause Full (Allocation Failure) 1979M->1979M(1979M) 21.887ms
+[2019-08-30T15:36:44.766+0300][530.878s][info][gc] GC(9) Pause Full (Allocation Failure) 1979M->1979M(1979M) 221.687ms
+[2019-08-30T15:36:45.114+0300][531.226s][info][gc] GC(10) Pause Full (Allocation Failure) 1979M->1979M(1979M) 147.958ms
+[2019-08-30T15:36:45.132+0300][531.245s][info][gc] GC(11) Pause Full (Allocation Failure) 1979M->1979M(1979M) 18.640ms
+[2019-08-30T15:36:46.336+0300][532.448s][info][gc] GC(12) Pause Full (Allocation Failure) 1979M->1979M(1979M) 20.395ms
+[2019-08-30T15:36:46.375+0300][532.487s][info][gc] GC(13) Pause Full (Allocation Failure) 1979M->1979M(1979M) 20.309ms
+[2019-08-30T15:36:46.525+0300][532.637s][info][gc] GC(14) Pause Full (Allocation Failure) 1979M->1979M(1979M) 149.776ms
+[2019-08-30T15:36:46.546+0300][532.658s][info][gc] GC(15) Pause Full (Allocation Failure) 1979M->1979M(1979M) 19.423ms
