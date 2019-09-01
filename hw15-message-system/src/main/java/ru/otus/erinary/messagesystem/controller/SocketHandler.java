@@ -9,28 +9,24 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import ru.otus.erinary.messagesystem.message.Message;
+import ru.otus.erinary.messagesystem.service.MessageListener;
 import ru.otus.erinary.messagesystem.service.MessageSystemClient;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-public class SocketHandler extends TextWebSocketHandler {
+public class SocketHandler extends TextWebSocketHandler implements MessageListener {
 
     private final String dataBaseServiceQueueName;
-    private final String frontendQueueName;
 
     private final MessageSystemClient messageService;
     private final ObjectMapper objectMapper;
-    private MessageDeliveryThread deliveryThread;
     private ConcurrentHashMap<String, WebSocketSession> webSocketMap = new ConcurrentHashMap<>();
 
     @Builder
-    public SocketHandler(String dataBaseServiceQueueName, String frontendQueueName, MessageSystemClient messageService, ObjectMapper objectMapper) {
+    public SocketHandler(String dataBaseServiceQueueName, MessageSystemClient messageService, ObjectMapper objectMapper) {
         this.dataBaseServiceQueueName = dataBaseServiceQueueName;
-        this.frontendQueueName = frontendQueueName;
         this.messageService = messageService;
         this.objectMapper = objectMapper;
     }
@@ -62,33 +58,10 @@ public class SocketHandler extends TextWebSocketHandler {
         webSocketMap.remove(session.getId());
     }
 
-    @PostConstruct
-    private void postConstruct() {
-        deliveryThread = this.new MessageDeliveryThread();
-        deliveryThread.start();
+    @Override
+    public void handleMessage(Message message) throws Exception {
+        WebSocketSession session = webSocketMap.get(message.getSessionId());
+        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
     }
 
-    @PreDestroy
-    private void preDestroy() {
-        deliveryThread.interrupt();
-    }
-
-    private class MessageDeliveryThread extends Thread {
-        @Override
-        public void run() {
-            log.info("MessageDeliveryThread run");
-            while (true) {
-                try {
-                    Message message = messageService.getMessageFromQueue(frontendQueueName);
-                    WebSocketSession session = webSocketMap.get(message.getSessionId());
-                    session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
-                } catch (InterruptedException e) {
-                    log.info("MessageDeliveryThread is interrupted");
-                    break;
-                } catch (Exception e) {
-                    log.error("Failed to send response ", e);
-                }
-            }
-        }
-    }
 }

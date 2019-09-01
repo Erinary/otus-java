@@ -18,6 +18,7 @@ import ru.otus.erinary.messagesystem.controller.SocketHandler;
 import ru.otus.erinary.messagesystem.service.DataBaseWorker;
 import ru.otus.erinary.messagesystem.service.LocalMessageSystemClient;
 import ru.otus.erinary.messagesystem.service.MessageSystemBroker;
+import ru.otus.erinary.messagesystem.service.MessageSystemClient;
 import ru.otus.erinary.model.User;
 import ru.otus.erinary.orm.DBService;
 import ru.otus.erinary.orm.DBServiceImpl;
@@ -95,21 +96,28 @@ public class WebConfig implements WebMvcConfigurer, WebSocketConfigurer {
 
     @Bean
     public WebSocketHandler socketHandler() {
-        return SocketHandler.builder()
-                .messageService(new LocalMessageSystemClient(messageSystemService()))
+        SocketHandler socketHandler = SocketHandler.builder()
+                .messageService(messageSystemClient())
                 .objectMapper(objectMapper())
                 .dataBaseServiceQueueName(dataBaseServiceQueueName)
-                .frontendQueueName(frontendQueueName)
                 .build();
+        messageSystemClient().registerListener(socketHandler, frontendQueueName);
+        return socketHandler;
     }
 
     @Bean
     public DataBaseWorker dataBaseWorker() {
-        return DataBaseWorker.builder()
-                .messageService(new LocalMessageSystemClient(messageSystemService()))
+        DataBaseWorker dbWorker = DataBaseWorker.builder()
+                .messageService(messageSystemClient())
                 .dbService(userDBService())
-                .dataBaseServiceQueueName(dataBaseServiceQueueName)
                 .frontendQueueName(frontendQueueName)
                 .build();
+        messageSystemClient().registerListener(dbWorker, dataBaseServiceQueueName);
+        return dbWorker;
+    }
+
+    @Bean
+    public MessageSystemClient messageSystemClient() {
+        return new LocalMessageSystemClient(messageSystemService());
     }
 }

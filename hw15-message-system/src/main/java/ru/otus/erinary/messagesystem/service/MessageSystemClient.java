@@ -8,4 +8,6 @@ public interface MessageSystemClient {
 
     Message getMessageFromQueue(String queueName) throws InterruptedException;
 
+    void registerListener(MessageListener listener, String queueName);
+
 }
