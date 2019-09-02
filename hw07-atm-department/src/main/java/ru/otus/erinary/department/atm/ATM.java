@@ -1,10 +1,12 @@
 package ru.otus.erinary.department.atm;
 
 import lombok.Data;
+import ru.otus.erinary.department.exception.ATMServiceException;
 import ru.otus.erinary.department.payment.PaymentStrategy;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -51,6 +53,24 @@ public class ATM {
      */
     public Map<Denomination, Long> getMoney(PaymentStrategy strategy, long requestedAmount) {
         return strategy.getMoney(this, requestedAmount);
+    }
+
+    public ATMState getATMState() {
+        return new ATMState(id, cells.values().stream()
+                .map(c -> new CellState(c.getDenomination(), c.getAmount()))
+                .collect(Collectors.toList()));
+    }
+
+    public void restoreATMState(ATMState state) {
+        if (!Objects.equals(state.getId(), id)) {
+            throw new ATMServiceException("Trying to restore state from ATM with different ID");
+        }
+        cells.clear();
+        cells.putAll(state.getCells().stream()
+                .collect(Collectors.toMap(
+                        CellState::getDenomination,
+                        cellState -> new Cell(cellState.getDenomination(), cellState.getAmount())
+                )));
     }
 
 }

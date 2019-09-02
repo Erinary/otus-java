@@ -1,23 +1,23 @@
 package ru.otus.erinary.department;
 
 import ru.otus.erinary.department.atm.ATM;
+import ru.otus.erinary.department.atm.ATMState;
 import ru.otus.erinary.department.atm.Cell;
+import ru.otus.erinary.department.exception.ATMServiceException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static ru.otus.erinary.department.atm.Denomination.*;
 
+@SuppressWarnings("WeakerAccess")
 public class Department {
 
-    private final ATMCaretaker caretaker;
     private final Map<String, ATM> atms;
+    private final Map<String, ATMState> atmInitialStates;
 
     public Department() {
-        this.caretaker = new ATMCaretaker();
         this.atms = new HashMap<>();
+        this.atmInitialStates = new HashMap<>();
     }
 
     public ATM getATM(String id) {
@@ -29,7 +29,9 @@ public class Department {
     }
 
     public void restoreATMState(String key) {
-        caretaker.restoreATMState(atms.get(key));
+        Optional.ofNullable(getATM(key))
+                .orElseThrow(() -> new ATMServiceException("ATM not found"))
+                .restoreATMState(atmInitialStates.get(key));
     }
 
     public long getAllATMBalance() {
@@ -38,7 +40,7 @@ public class Department {
 
     public String createATM(List<Cell> cells) {
         String id = UUID.randomUUID().toString();
-        if (atms.containsKey(id)) {
+        while (atms.containsKey(id)) {
             id = UUID.randomUUID().toString();
         }
         ATM atm = new ATM(id, cells);
@@ -58,7 +60,7 @@ public class Department {
     }
 
     public void saveATMState(ATM atm) {
-        caretaker.saveATMState(atm);
+        atmInitialStates.put(atm.getId(), atm.getATMState());
     }
 
 }
