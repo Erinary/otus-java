@@ -22,6 +22,7 @@
         <module>hw11-hibernate-cache</module>
         <module>hw12-web-server</module>
         <module>hw13-spring</module>
+        <module>hw14-sequence-of-numbers</module>
         <module>hw15-message-system</module>
     </modules>
 
