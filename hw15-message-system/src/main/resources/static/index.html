@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MyWebApp</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <div style="border: red 2px">
+        <p>Новый пользователь</p>
+        <input type="text" v-model="newUser.name" placeholder="Имя"/><br>
+        <input type="number" v-model="newUser.age" placeholder="Возраст"><br>
+        <input type="text" v-model="newUser.address" placeholder="Адрес"><br>
+        <div v-for="phone in newUser.phones">
+            <input type="text" v-model="phone.number" placeholder="Телефон"><br>
+        </div>
+
+        <button v-on:click="saveUser">Сохранить пользователя</button>
+    </div>
+    <table>
+        <p>Список пользователей</p>
+        <tr v-for="user in users">
+            <td>{{ user.name }}</td>
+            <td>{{ user.phones }}</td>
+        </tr>
+    </table>
+    <button v-on:click="loadData">Загрузить данные</button>
+</div>
+<script src="script.js"></script>
+
+</body>
+</html>
