@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hw13-spring</artifactId>
+    <artifactId>hw15-message-system</artifactId>
     <packaging>war</packaging>
 
     <dependencies>
@@ -43,10 +43,20 @@
             <version>${spring.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>4.0.1</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -60,7 +70,7 @@
     </dependencies>
 
     <build>
-        <finalName>SpringWebServer</finalName>
+        <finalName>MessageSystem</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -84,4 +94,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
