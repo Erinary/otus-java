@@ -17,8 +17,4 @@
         <module>data-server</module>
     </modules>
 
-    <properties>
-        <spring.version>5.1.5.RELEASE</spring.version>
-    </properties>
-
 </project>
