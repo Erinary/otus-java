@@ -1,8 +1,11 @@
 package ru.otus.erinary.ms.messageserver;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.otus.erinary.ms.messageserver.listener.SocketListener;
+import ru.otus.erinary.ms.messageserver.message.Message;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
@@ -20,14 +23,14 @@ public class MessageServer {
     private static final int DEFAULT_QUEUE_CAPACITY = 100;
 
     private final Map<String, BlockingQueue<Message>> queues;
-    private final Map<String, Set<Socket>> listeningSockets;
+    private final Map<String, Set<ObjectOutputStream>> queueOutputStreams;
     private final ServerSocket serverSocket;
 
     public MessageServer(List<String> queueList, int queueCapacity) throws IOException {
         int capacity = queueCapacity > 0 ? queueCapacity : DEFAULT_QUEUE_CAPACITY;
         this.queues = queueList.stream()
                 .collect(Collectors.toMap(queueName -> queueName, queueName -> new ArrayBlockingQueue<>(capacity)));
-        this.listeningSockets = queueList.stream()
+        this.queueOutputStreams = queueList.stream()
                 .collect(Collectors.toConcurrentMap(queueName -> queueName, queueName -> new CopyOnWriteArraySet<>()));
         this.serverSocket = new ServerSocket(PORT);
     }
@@ -44,6 +47,8 @@ public class MessageServer {
         log.info("Message server started");
         try {
             Socket socket = serverSocket.accept();
+            SocketListener socketListener = new SocketListener(socket, queues, queueOutputStreams);
+            socketListener.start();
         } catch (Exception e) {
             log.error("Error: {}", e.getMessage());
             throw e;
