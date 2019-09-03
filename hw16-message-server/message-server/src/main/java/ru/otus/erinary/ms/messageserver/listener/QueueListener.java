@@ -35,7 +35,9 @@ public class QueueListener extends Thread {
         while (true) {
             Message message = null;
             try {
+                log.info("Waiting for message in queue {}", this.queueName);
                 message = queue.take();
+                log.info("Selecting sink for message in queue {}", this.queueName);
                 ObjectOutputStream outputStream = queueOutputStreams.selectRandomSink(queueName);
                 outputStream.writeObject(message);
                 outputStream.flush();

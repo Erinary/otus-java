@@ -36,9 +36,14 @@ public class MessageServer {
         log.info("Message server started");
         try {
             initQueueListeners();
-            Socket socket = serverSocket.accept();
-            SocketListener socketListener = new SocketListener(socket, queues, queueOutputStreams);
-            socketListener.start();
+            //noinspection InfiniteLoopStatement
+            while (true) {
+                log.info("Waiting for connections");
+                Socket socket = serverSocket.accept();
+                log.info("Got new connection from {}", socket.getInetAddress());
+                SocketListener socketListener = new SocketListener(socket, queues, queueOutputStreams);
+                socketListener.start();
+            }
         } catch (Exception e) {
             log.error("Error: {}", e.getMessage());
             throw e;
@@ -46,7 +51,7 @@ public class MessageServer {
     }
 
     private void initQueueListeners() {
-        queues.forEach((key, value) -> new QueueListener(key, value, queueOutputStreams));
+        queues.forEach((key, value) -> new QueueListener(key, value, queueOutputStreams).start());
     }
 
 }

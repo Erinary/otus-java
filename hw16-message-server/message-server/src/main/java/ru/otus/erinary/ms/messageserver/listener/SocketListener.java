@@ -28,13 +28,19 @@ public class SocketListener extends Thread {
 
     @Override
     public void run() {
+        log.info("Running socket handling thread");
         String getFromQueue = null;
         ObjectOutputStream outputStream = null;
-        try (ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream())) {
+        ObjectInputStream inputStream = null;
+        log.info("Opening input stream");
+        try {
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            inputStream = new ObjectInputStream(socket.getInputStream());
+            log.info("Waiting for handshake");
             Object handshake = inputStream.readObject();
+            log.info("First object received");
             if (handshake instanceof Handshake) {
                 getFromQueue = ((Handshake) handshake).getGetFromQueue();
-                outputStream = new ObjectOutputStream(socket.getOutputStream());
                 queueOutputStreams.addSink(getFromQueue, outputStream);
             } else {
                 throw new MessageServerException("Handshake between client and message server failed");
@@ -51,6 +57,9 @@ public class SocketListener extends Thread {
             try {
                 if (outputStream != null) {
                     queueOutputStreams.removeSink(getFromQueue, outputStream);
+                }
+                if (inputStream != null) {
+                    inputStream.close();
                 }
                 socket.close();
             } catch (IOException ignored) {
