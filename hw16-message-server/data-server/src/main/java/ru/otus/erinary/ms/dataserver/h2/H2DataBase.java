@@ -1,8 +1,8 @@
 package ru.otus.erinary.ms.dataserver.h2;
 
-import ru.otus.erinary.ms.messageserver.model.Address;
-import ru.otus.erinary.ms.messageserver.model.Phone;
-import ru.otus.erinary.ms.messageserver.model.User;
+import ru.otus.erinary.ms.dataserver.dao.AddressModel;
+import ru.otus.erinary.ms.dataserver.dao.PhoneModel;
+import ru.otus.erinary.ms.dataserver.dao.UserModel;
 
 import java.sql.*;
 import java.util.HashSet;
@@ -42,13 +42,13 @@ public class H2DataBase {
         }
     }
 
-    public User selectUserById(long id) throws SQLException {
-        User result = null;
+    public UserModel selectUserById(long id) throws SQLException {
+        UserModel result = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_USER)) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    result = new User(
+                    result = new UserModel(
                             resultSet.getString("name"),
                             resultSet.getInt("age"),
                             null,
@@ -76,13 +76,13 @@ public class H2DataBase {
         }
     }
 
-    public Address selectAddressById(long id) throws SQLException {
-        Address result = null;
+    public AddressModel selectAddressById(long id) throws SQLException {
+        AddressModel result = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ADDRESS)) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    result = new Address(
+                    result = new AddressModel(
                             resultSet.getLong("id"),
                             resultSet.getString("street")
                     );
@@ -108,13 +108,13 @@ public class H2DataBase {
         }
     }
 
-    public Set<Phone> selectPhoneByUserId(long userId) throws SQLException {
-        Set<Phone> result = new HashSet<>();
+    public Set<PhoneModel> selectPhoneByUserId(long userId) throws SQLException {
+        Set<PhoneModel> result = new HashSet<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_PHONE)) {
             statement.setLong(1, userId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    result.add(new Phone(
+                    result.add(new PhoneModel(
                             resultSet.getLong("id"),
                             resultSet.getString("number"))
                     );
