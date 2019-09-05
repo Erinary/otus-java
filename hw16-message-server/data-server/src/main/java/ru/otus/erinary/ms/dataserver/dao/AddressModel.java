@@ -3,6 +3,7 @@ package ru.otus.erinary.ms.dataserver.dao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.otus.erinary.ms.messageserver.model.Address;
 
 import javax.persistence.*;
 
@@ -23,6 +24,10 @@ public class AddressModel {
 
     public AddressModel(String street) {
         this.street = street;
+    }
+
+    public AddressModel(Address address) {
+        this.street = address.getStreet();
     }
 
 }

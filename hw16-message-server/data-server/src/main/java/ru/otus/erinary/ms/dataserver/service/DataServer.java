@@ -7,13 +7,15 @@ import ru.otus.erinary.ms.dataserver.dao.AddressModel;
 import ru.otus.erinary.ms.dataserver.dao.PhoneModel;
 import ru.otus.erinary.ms.dataserver.dao.UserModel;
 import ru.otus.erinary.ms.dataserver.orm.DBService;
+import ru.otus.erinary.ms.messageserver.message.Message;
+import ru.otus.erinary.ms.messageserver.service.MessageListener;
 
 import java.util.Set;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DataServer {
+public class DataServer implements MessageListener {
 
     private final DBService<UserModel> userDaoDBService;
 
@@ -23,4 +25,8 @@ public class DataServer {
         System.out.println(userDaoDBService.load(1));
     }
 
+    @Override
+    public void handleMessage(Message message) throws Exception {
+
+    }
 }

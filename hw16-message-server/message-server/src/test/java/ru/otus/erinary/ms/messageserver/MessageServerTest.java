@@ -2,7 +2,7 @@ package ru.otus.erinary.ms.messageserver;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.otus.erinary.ms.messageserver.message.CreateUserRequest;
+import ru.otus.erinary.ms.messageserver.message.create.CreateUserRequest;
 import ru.otus.erinary.ms.messageserver.message.Message;
 import ru.otus.erinary.ms.messageserver.service.ClientSocket;
 import ru.otus.erinary.ms.messageserver.service.MessageServer;

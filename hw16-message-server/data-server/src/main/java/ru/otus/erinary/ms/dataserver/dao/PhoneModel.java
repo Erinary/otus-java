@@ -1,6 +1,7 @@
 package ru.otus.erinary.ms.dataserver.dao;
 
 import lombok.*;
+import ru.otus.erinary.ms.messageserver.model.Phone;
 
 import javax.persistence.*;
 
@@ -27,6 +28,10 @@ public class PhoneModel {
 
     public PhoneModel(String number) {
         this.number = number;
+    }
+
+    public PhoneModel(Phone phone) {
+        this.number = phone.getNumber();
     }
 
     public PhoneModel(long id, String number) {

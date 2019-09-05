@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.otus.erinary.ms.messageserver.model.User;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -44,7 +45,17 @@ public class UserModel {
         }
     }
 
-    public void addPhone(PhoneModel phone) {
+    public UserModel(User user) {
+        this.name = user.getName();
+        this.age = user.getAge();
+        this.address = new AddressModel(user.getAddress());
+        this.phones = new HashSet<>();
+        if (user.getPhones() != null) {
+            user.getPhones().forEach(phone -> addPhone(new PhoneModel(phone)));
+        }
+    }
+
+    private void addPhone(PhoneModel phone) {
         phones.add(phone);
         phone.setUser(this);
     }
