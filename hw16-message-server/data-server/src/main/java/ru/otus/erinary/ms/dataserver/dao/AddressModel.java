@@ -30,4 +30,8 @@ public class AddressModel {
         this.street = address.getStreet();
     }
 
+    public Address toAddress() {
+        return new Address(street);
+    }
+
 }

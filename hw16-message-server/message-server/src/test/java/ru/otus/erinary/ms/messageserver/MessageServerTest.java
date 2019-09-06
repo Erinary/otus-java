@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.otus.erinary.ms.messageserver.message.create.CreateUserRequest;
 import ru.otus.erinary.ms.messageserver.message.Message;
-import ru.otus.erinary.ms.messageserver.service.ClientSocket;
+import ru.otus.erinary.ms.messageserver.service.SocketClient;
 import ru.otus.erinary.ms.messageserver.service.MessageServer;
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class MessageServerTest {
 
     @Test
     void testConnectToServer() throws Exception {
-        ClientSocket client = new ClientSocket("to-web-service", 8888, "localhost");
+        SocketClient client = new SocketClient("to-web-service", 8888, "localhost");
         client.connect();
         client.registerListener(message -> System.out.println("Message received"));
         Message message = new CreateUserRequest();

@@ -15,7 +15,9 @@ import ru.otus.erinary.ms.dataserver.dao.UserModel;
 import ru.otus.erinary.ms.dataserver.h2.H2DataBase;
 import ru.otus.erinary.ms.dataserver.orm.DBService;
 import ru.otus.erinary.ms.dataserver.orm.DBServiceImpl;
-import ru.otus.erinary.ms.dataserver.service.DataServer;
+import ru.otus.erinary.ms.dataserver.service.DataService;
+import ru.otus.erinary.ms.dataserver.service.SpringSocketClient;
+import ru.otus.erinary.ms.messageserver.service.SocketClient;
 
 import java.sql.SQLException;
 import java.util.Properties;
@@ -23,11 +25,11 @@ import java.util.Properties;
 @ComponentScan
 @Configuration
 @PropertySource("classpath:application.properties")
-public class AppConfig {
+public class DataAppConfig {
 
     private final Environment env;
 
-    public AppConfig(Environment env) {
+    public DataAppConfig(Environment env) {
         this.env = env;
     }
 
@@ -65,8 +67,20 @@ public class AppConfig {
     }
 
     @Bean
-    public DataServer dataServer() {
-        return new DataServer(userDBService());
+    public DataService dataServer() {
+        SocketClient client = clientSocket();
+        DataService dataService = new DataService(userDBService(), client);
+        client.registerListener(dataService);
+        return dataService;
+    }
+
+    @Bean
+    public SocketClient clientSocket() {
+        return new SpringSocketClient(
+                env.getRequiredProperty("listened.queue"),
+                Integer.parseInt(env.getRequiredProperty("server.port")),
+                env.getRequiredProperty("server.host")
+        );
     }
 
 }

@@ -9,6 +9,7 @@ import ru.otus.erinary.ms.messageserver.model.User;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -53,6 +54,12 @@ public class UserModel {
         if (user.getPhones() != null) {
             user.getPhones().forEach(phone -> addPhone(new PhoneModel(phone)));
         }
+    }
+
+    public User toUser() {
+        User user = new User(name, age, address.toAddress(), phones.stream().map(PhoneModel::toPhone).collect(Collectors.toSet()));
+        user.getPhones().forEach(phone -> phone.setUser(user));
+        return user;
     }
 
     private void addPhone(PhoneModel phone) {

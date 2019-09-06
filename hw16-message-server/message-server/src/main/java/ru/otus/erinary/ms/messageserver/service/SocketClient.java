@@ -13,7 +13,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 @Slf4j
-public class ClientSocket {
+public class SocketClient {
 
     private final String queueName;
     private final int port;
@@ -25,7 +25,7 @@ public class ClientSocket {
     private MessageListener messageListener;
     private MessageHandlerThread messageHandler;
 
-    public ClientSocket(String queueName, int port, String host) {
+    public SocketClient(String queueName, int port, String host) {
         this.queueName = queueName;
         this.port = port;
         this.host = host;
@@ -66,8 +66,9 @@ public class ClientSocket {
         }
     }
 
-    private void shutdown() {
+    public void shutdown() {
         try {
+            //TODO если не запущен MS, то при потыке запустить сервер валятся NPE
             messageHandler.interrupt();
             inputStream.close();
             outputStream.close();

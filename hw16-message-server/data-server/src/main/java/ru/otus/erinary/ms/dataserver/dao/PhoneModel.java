@@ -26,10 +26,6 @@ public class PhoneModel {
     @JoinColumn(name = "user_id")
     private UserModel user;
 
-    public PhoneModel(String number) {
-        this.number = number;
-    }
-
     public PhoneModel(Phone phone) {
         this.number = phone.getNumber();
     }
@@ -37,6 +33,10 @@ public class PhoneModel {
     public PhoneModel(long id, String number) {
         this.id = id;
         this.number = number;
+    }
+
+    public Phone toPhone() {
+        return new Phone(number);
     }
 
 }
