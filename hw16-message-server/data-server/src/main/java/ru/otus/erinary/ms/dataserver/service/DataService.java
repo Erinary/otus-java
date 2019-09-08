@@ -44,10 +44,7 @@ public class DataService implements MessageListener {
     private CreateUserResponse createUser(Message request) {
         log.info("Trying to create new user...");
         dbService.create(new UserModel(((CreateUserRequest) request).getUser()));
-        return CreateUserResponse.builder()
-                .status("OK")
-                .message("User created")
-                .build();
+        return new CreateUserResponse("OK", "User created");
     }
 
     private LoadUsersResponse loadUsers() {

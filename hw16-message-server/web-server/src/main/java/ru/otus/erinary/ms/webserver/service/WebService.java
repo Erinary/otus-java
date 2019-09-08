@@ -9,8 +9,19 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 import ru.otus.erinary.ms.messageserver.message.Message;
+import ru.otus.erinary.ms.messageserver.message.create.CreateUserRequest;
+import ru.otus.erinary.ms.messageserver.message.create.CreateUserResponse;
+import ru.otus.erinary.ms.messageserver.message.load.LoadUsersRequest;
+import ru.otus.erinary.ms.messageserver.message.load.LoadUsersResponse;
+import ru.otus.erinary.ms.messageserver.message.util.ErrorMessage;
 import ru.otus.erinary.ms.messageserver.service.MessageListener;
 import ru.otus.erinary.ms.messageserver.service.SocketClient;
+import ru.otus.erinary.ms.webserver.model.WebMessage;
+import ru.otus.erinary.ms.webserver.model.create.WebCreateUserRequest;
+import ru.otus.erinary.ms.webserver.model.create.WebCreateUserResponse;
+import ru.otus.erinary.ms.webserver.model.load.WebLoadUsersRequest;
+import ru.otus.erinary.ms.webserver.model.load.WebLoadUsersResponse;
+import ru.otus.erinary.ms.webserver.model.util.WebErrorMessage;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,13 +37,23 @@ public class WebService extends AbstractWebSocketHandler implements MessageListe
     private ConcurrentHashMap<String, WebSocketSession> webSocketMap = new ConcurrentHashMap<>();
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        Message request = objectMapper.readValue(message.getPayload(), Message.class);
+    protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+        WebMessage request = objectMapper.readValue(textMessage.getPayload(), WebMessage.class);
         log.info("Got message from client: {}", request);
-        request.setWebSocketSessionId(session.getId());
-        request.setPutToQueue(targetQueue);
-        request.setReplyTo(listenedQueue);
-        socketClient.sendMessage(request);
+        Message message;
+        if (request instanceof WebCreateUserRequest) {
+            message = new CreateUserRequest(((WebCreateUserRequest) request).getApiUser().toUser());
+        } else if (request instanceof WebLoadUsersRequest) {
+            message = new LoadUsersRequest();
+        } else {
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                    new WebErrorMessage("Unknown type of message from websocket"))));
+            return;
+        }
+        message.setWebSocketSessionId(session.getId());
+        message.setPutToQueue(targetQueue);
+        message.setReplyTo(listenedQueue);
+        socketClient.sendMessage(message);
     }
 
     @Override
@@ -50,7 +71,19 @@ public class WebService extends AbstractWebSocketHandler implements MessageListe
     @Override
     public void handleMessage(Message message) throws Exception {
         WebSocketSession session = webSocketMap.get(message.getWebSocketSessionId());
-        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(convertMessage(message))));
     }
 
+    private WebMessage convertMessage(Message message) {
+        if (message instanceof CreateUserResponse) {
+            return new WebCreateUserResponse(
+                    ((CreateUserResponse) message).getStatus(),
+                    ((CreateUserResponse) message).getMessage()
+            );
+        } else if (message instanceof LoadUsersResponse) {
+            return new WebLoadUsersResponse(((LoadUsersResponse) message).getUsers());
+        } else {
+            return new WebErrorMessage(((ErrorMessage) message).getMessage());
+        }
+    }
 }

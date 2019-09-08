@@ -57,9 +57,7 @@ public class UserModel {
     }
 
     public User toUser() {
-        User user = new User(name, age, address.toAddress(), phones.stream().map(PhoneModel::toPhone).collect(Collectors.toSet()));
-        user.getPhones().forEach(phone -> phone.setUser(user));
-        return user;
+        return new User(name, age, address.toAddress(), phones.stream().map(PhoneModel::toPhone).collect(Collectors.toSet()));
     }
 
     private void addPhone(PhoneModel phone) {

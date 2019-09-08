@@ -4,16 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Phone {
+public class Phone implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String number;
-    private User user;
-
-    public Phone(String number) {
-        this.number = number;
-    }
 
 }
