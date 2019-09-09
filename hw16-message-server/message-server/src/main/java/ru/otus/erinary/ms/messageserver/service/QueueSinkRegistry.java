@@ -8,6 +8,9 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
+/**
+ * Класс, который содержит мапу [имя очереди - выводной поток соответствующего сокета] и методы для работы с ней
+ */
 public class QueueSinkRegistry {
 
     private Map<String, Set<ObjectOutputStream>> queueOutputStreams;

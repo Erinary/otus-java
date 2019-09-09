@@ -25,6 +25,9 @@ import ru.otus.erinary.ms.webserver.model.util.WebErrorMessage;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Сервис по обработке запросов с веб-клиента и работе с MessageServer
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -36,6 +39,13 @@ public class WebService extends AbstractWebSocketHandler implements MessageListe
     private final ObjectMapper objectMapper;
     private ConcurrentHashMap<String, WebSocketSession> webSocketMap = new ConcurrentHashMap<>();
 
+    /**
+     * Обработка запросов клиента в веб-сокете
+     *
+     * @param session     сессия веб-сокета
+     * @param textMessage запрос веб-клиента
+     * @throws Exception ошибки при обработке запроса
+     */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
         WebMessage request = objectMapper.readValue(textMessage.getPayload(), WebMessage.class);
@@ -68,8 +78,15 @@ public class WebService extends AbstractWebSocketHandler implements MessageListe
         webSocketMap.remove(session.getId());
     }
 
+    /**
+     * Метод обработки ответов от MessageServer
+     *
+     * @param message сообщение от MessageServer
+     * @throws Exception ошибки при обработке сообщения
+     */
     @Override
     public void handleMessage(Message message) throws Exception {
+        log.info("Got answer from MessageServer, sending it to client");
         WebSocketSession session = webSocketMap.get(message.getWebSocketSessionId());
         session.sendMessage(new TextMessage(objectMapper.writeValueAsString(convertMessage(message))));
     }

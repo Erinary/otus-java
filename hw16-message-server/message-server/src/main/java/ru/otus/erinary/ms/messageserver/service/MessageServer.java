@@ -50,6 +50,10 @@ public class MessageServer {
         }
     }
 
+    /**
+     * Метод инициализирует свой QueueListener для каждой очереди сообщений (WebServer'ы имеют каждый свою очередь,
+     * DataServer'ы - одну общую)
+     */
     private void initQueueListeners() {
         queues.forEach((key, value) -> new QueueListener(key, value, queueOutputStreams).start());
     }

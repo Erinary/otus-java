@@ -12,6 +12,9 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+/**
+ * Класс сокет-клиента, который создает соединение с сокет-сервером и отправляет сообщения в MessageServer
+ */
 @Slf4j
 public class SocketClient {
 
@@ -68,7 +71,6 @@ public class SocketClient {
 
     public void shutdown() {
         try {
-            //TODO если не запущен MS, то при потыке запустить сервер валятся NPE
             messageHandler.interrupt();
             inputStream.close();
             outputStream.close();

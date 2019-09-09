@@ -13,6 +13,10 @@ import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * Класс, содержащий в себе сокет, который открывается сокет-сервером при создании соединения, и который обрабатывает
+ * входящие в MessageServer сообщения от других сервисов
+ */
 @Slf4j
 public class SocketListener extends Thread {
 
@@ -42,6 +46,7 @@ public class SocketListener extends Thread {
             if (handshake instanceof Handshake) {
                 getFromQueue = ((Handshake) handshake).getGetFromQueue();
                 queueOutputStreams.addSink(getFromQueue, outputStream);
+                log.info("Handshake is completed");
             } else {
                 throw new MessageServerException("Handshake between client and message server failed");
             }

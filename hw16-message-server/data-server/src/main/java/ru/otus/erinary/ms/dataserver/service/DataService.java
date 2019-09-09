@@ -16,6 +16,9 @@ import ru.otus.erinary.ms.messageserver.service.SocketClient;
 
 import java.util.stream.Collectors;
 
+/**
+ * Сервис для обработки запросов в БД от MessageServer
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,11 @@ public class DataService implements MessageListener {
     private final DBService<UserModel> dbService;
     private final SocketClient socketClient;
 
+    /**
+     * Обработка входящего сообщения от MessageServer
+     *
+     * @param message сообщение от MessageServer
+     */
     @Override
     public void handleMessage(Message message) {
         log.info("Starting to handle message for DBService");
@@ -44,6 +52,7 @@ public class DataService implements MessageListener {
     private CreateUserResponse createUser(Message request) {
         log.info("Trying to create new user...");
         dbService.create(new UserModel(((CreateUserRequest) request).getUser()));
+        log.info("New user is created");
         return new CreateUserResponse("OK", "User created");
     }
 

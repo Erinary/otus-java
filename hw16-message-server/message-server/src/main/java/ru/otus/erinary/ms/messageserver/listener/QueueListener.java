@@ -7,6 +7,9 @@ import ru.otus.erinary.ms.messageserver.message.Message;
 import java.io.ObjectOutputStream;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * Класс, который слушает очередь сообщений для определенного сервиса и обрабатывает положенные туда сообщения
+ */
 @Slf4j
 public class QueueListener extends Thread {
 
@@ -44,7 +47,7 @@ public class QueueListener extends Thread {
             } catch (InterruptedException e) {
                 throw e;
             } catch (Exception e) {
-                log.error("Couldn't handle message, try to return message into queue. Error: ", e);
+                log.error("Couldn't handle message, trying to return message into queue. Error: ", e);
                 if (message != null) {
                     queue.put(message);
                 }
