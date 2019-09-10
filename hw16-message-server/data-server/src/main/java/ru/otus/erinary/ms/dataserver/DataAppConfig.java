@@ -24,7 +24,7 @@ import java.util.Properties;
 
 @ComponentScan
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:data-application.properties")
 public class DataAppConfig {
 
     private final Environment env;
