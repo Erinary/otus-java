@@ -17,19 +17,20 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MessageServer {
 
-    private static final int PORT = 8888;
+    private static final int DEFAULT_PORT = 8888;
     private static final int DEFAULT_QUEUE_CAPACITY = 100;
 
     private final Map<String, BlockingQueue<Message>> queues;
     private final QueueSinkRegistry queueOutputStreams;
     private final ServerSocket serverSocket;
 
-    public MessageServer(List<String> queueList, int queueCapacity) throws IOException {
+    public MessageServer(List<String> queueList, int serverPort, int queueCapacity) throws IOException {
+        int port = serverPort > 0 ? serverPort : DEFAULT_PORT;
         int capacity = queueCapacity > 0 ? queueCapacity : DEFAULT_QUEUE_CAPACITY;
         this.queues = queueList.stream()
                 .collect(Collectors.toMap(queueName -> queueName, queueName -> new ArrayBlockingQueue<>(capacity)));
         this.queueOutputStreams = new QueueSinkRegistry(queueList);
-        this.serverSocket = new ServerSocket(PORT);
+        this.serverSocket = new ServerSocket(port);
     }
 
     public void run() throws IOException {

@@ -19,16 +19,33 @@ public class ServerStarter {
     public static void main(String[] args) {
         try {
             log.info("Starting message server");
-            Process messageServer = exec(MessageServerStarter.class.getName(), new ArrayList<>()).inheritIO().start();
+            List<String> messageServerArgs = List.of(
+                    "--port=8888",
+                    "--queues=to-web-service,to-second-web-service,to-data-service"
+            );
+            Process messageServer = exec(MessageServerStarter.class.getName(), messageServerArgs).inheritIO().start();
 
             while (!messageServer.isAlive()) {
                 Thread.sleep(500);
             }
 
-            log.info("Starting web-server");
-            Process webServer = exec(WebAppInitializer.class.getName(), new ArrayList<>()).inheritIO().start();
-            log.info("Starting data-server");
+            log.info("Starting first web-server");
+            List<String> webServerArgs = List.of(
+                    "--server.port=8085",
+                    "--ms.listened.queue=to-web-service"
+            );
+            Process webServer = exec(WebAppInitializer.class.getName(), webServerArgs).inheritIO().start();
+
+            log.info("Starting second web-server");
+            List<String> secondWebServerArgs = List.of(
+                    "--server.port=8090",
+                    "--ms.listened.queue=to-second-web-service"
+            );
+            Process secondWebServer = exec(WebAppInitializer.class.getName(), secondWebServerArgs).inheritIO().start();
+
+            log.info("Starting first data-server");
             Process dataServer = exec(DataAppInitializer.class.getName(), new ArrayList<>()).inheritIO().start();
+
             //noinspection InfiniteLoopStatement
             while (true) {
                 Thread.sleep(1000);

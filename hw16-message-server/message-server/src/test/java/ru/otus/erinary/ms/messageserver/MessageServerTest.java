@@ -22,7 +22,7 @@ public class MessageServerTest {
     void startServer() {
         server = new Thread(() -> {
             try {
-                new MessageServer(List.of("to-data-service", "to-web-service"), 0).run();
+                new MessageServer(List.of("to-data-service", "to-web-service"), 0,0).run();
             } catch (IOException e) {
                 System.exit(-1);
             }

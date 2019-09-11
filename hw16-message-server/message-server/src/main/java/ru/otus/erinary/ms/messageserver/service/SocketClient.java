@@ -62,6 +62,7 @@ public class SocketClient {
 
     public void sendMessage(Message message) {
         try {
+            log.info("Sending message to message broker: {}", message);
             outputStream.writeObject(message);
             outputStream.flush();
         } catch (IOException e) {
