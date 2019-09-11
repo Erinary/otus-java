@@ -1,6 +1,7 @@
 package ru.otus.erinary.ms.dataserver.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.otus.erinary.ms.dataserver.dao.UserModel;
@@ -26,6 +27,8 @@ public class DataService implements MessageListener {
 
     private final DBService<UserModel> dbService;
     private final SocketClient socketClient;
+    @Setter
+    private String serverName;
 
     /**
      * Обработка входящего сообщения от MessageServer
@@ -34,7 +37,7 @@ public class DataService implements MessageListener {
      */
     @Override
     public void handleMessage(Message message) {
-        log.info("Starting to handle message for DBService");
+        log.info("Starting to handle message for DBService [{}]", serverName);
         Message response;
         if (message instanceof CreateUserRequest) {
             response = createUser(message);

@@ -70,6 +70,7 @@ public class DataAppConfig {
     public DataService dataServer() {
         SocketClient client = clientSocket();
         DataService dataService = new DataService(userDBService(), client);
+        dataService.setServerName(env.getRequiredProperty("data.server.name"));
         client.registerListener(dataService);
         return dataService;
     }

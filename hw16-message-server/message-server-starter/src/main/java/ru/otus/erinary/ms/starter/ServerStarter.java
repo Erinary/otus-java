@@ -44,7 +44,18 @@ public class ServerStarter {
             Process secondWebServer = exec(WebAppInitializer.class.getName(), secondWebServerArgs).inheritIO().start();
 
             log.info("Starting first data-server");
-            Process dataServer = exec(DataAppInitializer.class.getName(), new ArrayList<>()).inheritIO().start();
+            List<String> dataServerArgs = List.of(
+                    "--datasource.url=jdbc:h2:./hw16-message-server/data-server/h2-database/user_base;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE",
+                    "--data.server.name=first-data-server"
+            );
+            Process dataServer = exec(DataAppInitializer.class.getName(), dataServerArgs).inheritIO().start();
+
+            log.info("Starting second data-server");
+            List<String> secondDataServerArgs = List.of(
+                    "--datasource.url=jdbc:h2:./hw16-message-server/data-server/h2-database/user_base;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE",
+                    "--data.server.name=second-data-server"
+            );
+            Process secondDataServer = exec(DataAppInitializer.class.getName(), secondDataServerArgs).inheritIO().start();
 
             //noinspection InfiniteLoopStatement
             while (true) {

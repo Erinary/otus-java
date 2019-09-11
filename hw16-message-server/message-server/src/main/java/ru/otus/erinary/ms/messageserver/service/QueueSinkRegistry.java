@@ -1,16 +1,16 @@
 package ru.otus.erinary.ms.messageserver.service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.ObjectOutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 /**
  * Класс, который содержит мапу [имя очереди - выводной поток соответствующего сокета] и методы для работы с ней
  */
+@Slf4j
 public class QueueSinkRegistry {
 
     private Map<String, Set<ObjectOutputStream>> queueOutputStreams;
@@ -21,6 +21,7 @@ public class QueueSinkRegistry {
     }
 
     public synchronized void addSink(String queueName, ObjectOutputStream outputStream) {
+        log.info("Adding sink for queue [{}]: [{}]", queueName, outputStream);
         queueOutputStreams.get(queueName).add(outputStream);
         this.notifyAll();
     }
@@ -29,7 +30,10 @@ public class QueueSinkRegistry {
         while (queueOutputStreams.get(queueName).isEmpty()) {
             this.wait();
         }
-        return getRandomOutputStream(queueOutputStreams.get(queueName));
+        log.info("All sinks for queue [{}]: {}", queueName, queueOutputStreams.get(queueName));
+        ObjectOutputStream oos = getRandomOutputStream(queueOutputStreams.get(queueName));
+        log.info("Selected sinks for queue [{}]: {}", queueName, oos);
+        return oos;
     }
 
     public synchronized void removeSink(String queueName, ObjectOutputStream outputStream) {
@@ -37,9 +41,6 @@ public class QueueSinkRegistry {
     }
 
     private ObjectOutputStream getRandomOutputStream(Set<ObjectOutputStream> streamSet) {
-        for (int i = 0; i < new Random().nextInt(streamSet.size()); i++) {
-            streamSet.iterator().next();
-        }
-        return streamSet.iterator().next();
+        return new ArrayList<>(streamSet).get((int) (streamSet.size() * Math.random()));
     }
 }
