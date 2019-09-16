@@ -1,6 +1,7 @@
 package ru.otus.erinary.department.atm;
 
 import lombok.Data;
+import ru.otus.erinary.department.atm.visitor.ATMVisitor;
 import ru.otus.erinary.department.exception.ATMServiceException;
 import ru.otus.erinary.department.payment.PaymentStrategy;
 
@@ -29,7 +30,7 @@ public class ATM {
      */
     public long getATMBalance() {
         long balance = cells.entrySet().stream().mapToLong(entry -> entry.getKey().value * entry.getValue().getAmount()).sum();
-        System.out.println("Баланс ATM: " + balance);
+        System.out.println("Баланс ATM [" + id + "]: " + balance);
         return balance;
     }
 
@@ -71,6 +72,10 @@ public class ATM {
                         CellState::getDenomination,
                         cellState -> new Cell(cellState.getDenomination(), cellState.getAmount())
                 )));
+    }
+
+    public void accept(ATMVisitor visitor) {
+        visitor.visit(this);
     }
 
 }

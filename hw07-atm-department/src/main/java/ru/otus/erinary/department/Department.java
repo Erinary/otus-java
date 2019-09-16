@@ -3,6 +3,7 @@ package ru.otus.erinary.department;
 import ru.otus.erinary.department.atm.ATM;
 import ru.otus.erinary.department.atm.ATMState;
 import ru.otus.erinary.department.atm.Cell;
+import ru.otus.erinary.department.atm.visitor.BalanceATMVisitor;
 import ru.otus.erinary.department.exception.ATMServiceException;
 
 import java.util.*;
@@ -35,7 +36,9 @@ public class Department {
     }
 
     public long getAllATMBalance() {
-        return atms.values().stream().mapToLong(ATM::getATMBalance).sum();
+        BalanceATMVisitor visitor = new BalanceATMVisitor();
+        atms.values().forEach(atm -> atm.accept(visitor));
+        return visitor.getAccumulatedBalance();
     }
 
     public String createATM(List<Cell> cells) {
