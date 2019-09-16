@@ -24,6 +24,7 @@
         <module>hw13-spring</module>
         <module>hw14-sequence-of-numbers</module>
         <module>hw15-message-system</module>
+        <module>hw16-message-server</module>
     </modules>
 
     <properties>
